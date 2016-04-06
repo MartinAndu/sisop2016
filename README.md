@@ -6,8 +6,8 @@
 	      	# Sueiro, Ignacio
 			# Castro Pippo, Juan
 			# Alfonso Oderigo, Diego
-			# Savulsky,Alejandro
-			# Moriello,Khalil
+			# Savulsky,Sebastián Alejandro
+			# Moriello,Khalil Alejandro
 
 ################################################################################################################################################
 				Descripción del Sistema
