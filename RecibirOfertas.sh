@@ -7,6 +7,7 @@ TRUE=1
 FALSE=0
 
 GRABITAC=$(pwd)"/grabarbitacora.sh"
+MOVER=$(pwd)"/mover.sh"
 
 
 function msjLog() {
@@ -78,6 +79,11 @@ do
 	fi
 done
 
+# TODO: Prueba para mover. Borrar esto dsp.
+# Esto funciona, no los cree en el repositorio por un tema de prolijidad
+$MOVER "$(pwd)/pruebita.txt" "$(pwd)/arribados" "${0}"
+
+# TODO: Prueba para log. Borrar esto dsp.
 MSJ="Prueba Log Sorteo 2016"
 msjLog "${MSJ}" "INFO"
 echo 'NO'

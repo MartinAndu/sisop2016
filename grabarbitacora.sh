@@ -22,6 +22,8 @@ bytes=1024
 CMDO2=`echo $CMDO | sed "s/^.*\/\(^[a-z]*\).sh$/\1/"`
 FILE=$(awk)${CMDO2}.log
 
+# TODO: el PATH del FILE  no esta bien, esta harcodeado porque no existe la variable de ambiente aun
+
 echo $FILE
 WHEN=`date +%T-%d-%m-%Y` 
 WHO=${USER}
