@@ -1,9 +1,21 @@
 #!/bin/bash
 
+
 IFS='
 '
 TRUE=1
 FALSE=0
+
+GRABITAC=$(pwd)"/grabarbitacora.sh"
+
+
+function msjLog() {
+  local MOUT=$1
+  local TIPO=$2
+  echo "${MOUT}"
+  $GRABITAC "$0" "$MOUT" "$TIPO"
+}
+
 function NovedadesPendientes() {
 	echo "NovedadesPendientes..."
 }
@@ -16,6 +28,7 @@ function Validar() {
 
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
 		return $FALSE
+	fi
 
 	local separacionNombre=`echo $1 | sed 's/.csv//g' | sed 's/_/\n/g'`
 
@@ -53,10 +66,18 @@ do
 	then
 		#MoverArchivos($archivo)
 		# escribir log
+		MSJ="NO"
+  		msjLog "${MSJ}" "INFO"
 		echo 'NO'
 	else
 		#MoverArchivos($archivo) => OK
 		#escribir log
+		MSJ="OK"
+  		msjLog "${MSJ}" "INFO"
 		echo "OK"
 	fi
 done
+
+MSJ="Prueba Log Sorteo 2016"
+msjLog "${MSJ}" "INFO"
+echo 'NO'
