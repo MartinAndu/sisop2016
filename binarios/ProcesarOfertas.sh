@@ -12,15 +12,6 @@ NOKDIR="$GRUPO/rechazados"
 LOGDIR="$GRUPO/bitacoras"
 #
 
-function FinProceso() {
-  local cantidadArchivosProcesados=$1
-  local cantidadArchivosRechazados=$2
-  echo "Cantidad de archivos procesados: $cantidadArchivosProcesados"
-  echo "Cantidad de archivos rechazados: $cantidadArchivosRechazados"
-  echo "Fin de ProcesarOfertas"
-  exit
-}
-
 function msjLog() {
   local MSJOUT=$1
   local TIPO=$2
@@ -28,90 +19,110 @@ function msjLog() {
   #$GRABITAC "$0" "$MSJOUT" "$TIPO"
 }
 
-function Rechazar(){
-  echo 'Rechazar'
-}
-
-function ValidarQueSePuedaProcesar(){
-  #local archivo=$1
-  #local resultadoEvaluacion=$?
-  #VerificarDuplicado $archivo
-  #VerificarCamposPrimerRegistro $archivo
-  echo "validando.."
-  return $TRUE
-}
-
-function VerificarDuplicado(){
+function EsArchivoDeTextoPlano(){
   local archivo=$1
-  if [ -f $PROCDIR/procesadas/$archivo ]
+  tipoArchivo=$(file -b --mime-type "$OKDIR/$archivoAceptado")
+  if [ $tipoArchivo = 'text/plain' ]
   then
-    #archivo duplicado
-    msjLog "Se rechaza el archivo por estar DUPLICADO" "INFO"
-    #MoverArchivos $archivo $NOKDIR
-    #cantidadArchivosRechazados +=1
+    echo 'es de texto plano'
+    return 0 #TRUE
   else
-    echo valido
-     #valido
+    echo 'NO es de texto plano'
+    return 1 #FALSE
   fi
 }
 
-function VerificarCamposPrimerRegistro(){
-  echo 'VerificarCamposPrimerRegistro'
+function EsArchivoDuplicado(){
+  local archivo=$1
+  if [ -f "$PROCDIR/procesadas/$archivo" ]
+  then
+    msjLog "Se rechaza el archivo por estar DUPLICADO" "INFO"
+    #MoverArchivos $archivo $NOKDIR
+    #cantidadArchivosRechazados +=1
+    return 0 #TRUE
+  else
+    echo "NO DUPLICADO" #NO VA
+    return 1 #FALSE
+  fi
 }
 
-cantidadArchivosAProcesar=$(ls -A "$OKDIR" | wc -l)
-# msjLog "Inicio de ProcesarOfertas" "INFO"
-# msjLog "Cantidad de archivos a procesar:$cantidadArchivosAProcesar" "INFO"
-echo "Inicio de ProcesarOfertas"
-echo "Cantidad de archivos a procesar: $cantidadArchivosAProcesar"
+#PENDIENTE
+function EsEstructuraInvalida(){
+  local archivo=$1
+  echo 'ESTRUCTURA VALIDA'
+  return 1 #FALSE
+}
 
-#Si no hay archivos para procesar finalizar
-if [ $cantidadArchivosAProcesar -eq 0 ] ; then
-  FinProceso 0 0
-fi
+function EsOfertaValida(){
+  local registro=$1
+  echo 'Es valida'
+  return 0 #TRUE
+}
+
+function RechazarRegistro(){
+  local registro=$1
+  echo 'RechazarRegistro'
+}
+
+function GrabarOfertaValida(){
+  local registro=$1
+  echo 'RechazarRegistro'
+}
+
+function Procesar(){
+  local archivo=$1
+  for registro in $registrosArchivo
+  do
+  if EsOfertaValida $registro
+  then
+    #GrabarOfertaValida $registro
+    #incrementar contadores adecuados
+    echo 'oferta valido' #nova
+  else
+    #RechazarRegistro $registro
+    #incrementar contadores adecuados
+    echo 'registro rechazado' #nova
+  fi
+  done
+  msjLog "Registros leídos = $aaa; Cantidad de ofertas válidas $bbb; Cantidad de ofertas rechazadas = $ccc" "INFO"
+}
+
+function FinProceso() {
+  local cantidadArchivosProcesados=$1
+  local cantidadArchivosRechazados=$2
+  msjLog "Cantidad de archivos procesados: $cantidadArchivosProcesados" "INFO"
+  msjLog "Cantidad de archivos rechazados: $cantidadArchivosRechazados" "INFO"
+  msjLog "Fin de ProcesarOfertas" "INFO"
+  exit
+}
+
+cantidadArchivosProcesados=0
+cantidadArchivosRechazados=0
+cantidadArchivosAProcesar=$(ls -A "$OKDIR" | wc -l)
+msjLog "Inicio de ProcesarOfertas" "INFO"
+msjLog "Cantidad de archivos a procesar:$cantidadArchivosAProcesar" "INFO"
+#echo "Inicio de ProcesarOfertas"
+#echo "Cantidad de archivos a procesar: $cantidadArchivosAProcesar"
+echo ''
 
 # Ordeno los archivos cronologicamente (mas antiguo al mas reciente) y los proceso
 archivosOrdenados=$(ls -A "$OKDIR" | sed 's-^\(.*\)\([0-9]\{8\}\).csv$-\2\1.csv-g' | sort | sed 's-^\([0-9]\{8\}\)\(.*\).csv$-\2\1.csv-g')
 for archivo in $archivosOrdenados
 do
-  echo $archivo
-  esValido=$(ValidarQueSePuedaProcesar) #$archivo
-  if [$esValido eq $TRUE]
+  echo $archivo #NO VA
+  if EsArchivoDuplicado $archivo || EsEstructuraInvalida $archivo # && [!EsEstructuraInvalida $archivo]
   then
-    msjLog "Archivo a procesar: $archivo" "INFO"
+    #MoverArchivos $archivo $NOKDIR
+    echo "Mover archivo a NOKDIR"
   else
-    echo 'mover a NOKDIR'
+    msjLog "Archivo a procesar: $archivo" "INFO"
+    #Procesar $archivo
   fi
+  #Resetear contadores de registros
+  echo '' #NO VA
 done
+
+FinProceso $cantidadArchivosProcesados $cantidadArchivosRechazados
+
 exit
-
-# for fileName in $inputFiles;
-# do
-#   procesarArchivo $fileName
-#   if [ "$?" = 0 ]; then	# si no fue procesado, sigo
-#     validarPrimerRegistro $fileName
-#     if [ "$?" = 0 ]; then
-#       # 3. Si se puede procesar el archivo
-#       msjLog "Archivo a procesar: $fileName" "INFO"
-# # Empiezo a procesar cada registro
-# procesarRegistro $fileName
-# finDeArchivo $fileName
-#     fi
-#   fi
-# done
-
-
-
-#Verifica el tipo de archivo
-#este recorrido tengo que lograr ordenarlo por fechas antes
-# for archivoAceptado in $(ls -A "$OKDIR")
-# do
-#   tipoArchivo=$(file -b --mime-type "$OKDIR/$archivoAceptado")
-#   if [ $tipoArchivo = 'text/plain' ]
-#   then
-#     echo 'valido'
-#   else
-#     echo 'invalido'
-#     #mover a rechazados
-#   fi
-# done
+#Ya termino el programa
