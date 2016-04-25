@@ -4,8 +4,10 @@
 # $2 directorio destino
 # $3 comando que lo invoca (opcional), se pasa como $0
 
-GRALOG="./gralog.sh"
 
+GRABITAC=$(pwd)"/GrabarBitacora.sh"
+
+  
 FILE=`basename $1`
 DEST=$2
 ORIG=`dirname $1`
@@ -19,15 +21,15 @@ function msjLog() {
   echo "${MOUT}"
   # Solo graba si se invoca por un comando que registre en su log
   if [[ ( ! -z $CMD ) && ( $CMDGRABA = "true" ) ]]; then
-    $GRALOG "$CMD" "$MOUT" "$TIPO"
+    $GRABITAC "$CMD" "$MOUT" "$TIPO"
   fi
 }
 
 # Si mover.sh es invocada por un comando que graba en un archivo de log, registrar el resultado de su uso en el log del comando
-if [ "$CMD" == "./afrainst.sh" ] || [ "$CMD" == "./afrainic.sh" ] || [ "$CMD" == "./afrareci.sh" ] || [ "$CMD" == "./afraumbr.sh" ] ; then
+if [ "$CMD" == "./PrepararAmbiente.sh" ] || [ "$CMD" == "./RecibirOfertas.sh" ] || [ "$CMD" == "./ProcesarOfertas.sh" ]  ; then
   CMDGRABA="true"
   MOUT="Se ha invocado al script mover.sh"
-  $GRALOG "$CMD" "$MOUT" "INFO"
+  $GRABITAC "$CMD" "$MOUT" "INFO"
 fi
 
 # Revisa que se reciban si o si dos parametros
@@ -60,7 +62,7 @@ fi
 
 # Revisa si ya existe un archivo con el mismo nombre
 FILEDEST=$DEST/$FILE
-DUPLI=$DEST/duplicados
+DUPLI=$DEST/dpl
 
 if [ -f "$FILEDEST" ]; then
   MOUT="Ya existe un archivo con ese nombre en \"${DEST}\""
@@ -100,3 +102,4 @@ else
   msjLog "$MOUT" "INFO"
   exit 0
 fi
+  
