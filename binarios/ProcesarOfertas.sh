@@ -15,7 +15,7 @@ function msjLog() {
   local MSJOUT=$1
   local TIPO=$2
   echo -e "${MSJOUT}"
-  "$GRABITAC $0 ${MSJOUT} $TIPO"
+  "$GRABITAC" "$0" "${MSJOUT}" "$TIPO"
 }
 
 function EsArchivoDeTextoPlano(){
