@@ -6,7 +6,6 @@
 
 # Revisa que se reciban si o si dos parametros
 
-
 if [ $# -lt 2 ]; then
   echo "Se deben ingresar al menos dos parametros"
   exit 1
@@ -21,35 +20,34 @@ TRUNCO=50		# Lineas que me guardo al truncar
 
 bytes=1024
 
+CMDO2=$(echo $CMDO | sed "s|^.*\/\(.*\).sh$|\1|g")
 
-#CMDO2=`echo $CMDO | sed "s/^.*\/\(^[a-z]*\)$/\1/"`
+#NOVA {
+# TODO: el PATH del FILE  no esta bien, esta harcodeado porque no existe la variable de ambiente aun
+GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
+LOGDIR="$GRUPO/bitacoras"
+FILE="${LOGDIR}"/"${CMDO2}"."${LOGEXT}"
+#NOVA }
+
 #FILE=$(awk)${CMDO2}.log
 
-CMDO2=`echo $CMDO | sed "s/^.*\/\([a-z]*\).sh$/\1/"`
-FILE="${LOGDIR}"/"${CMDO2}"."${LOGEXT}"
-
-
-
-# TODO: el PATH del FILE  no esta bien, esta harcodeado porque no existe la variable de ambiente aun
-
-WHEN=`date +%T-%d-%m-%Y` 
+WHEN=`date +%T-%d-%m-%Y`
 WHO=${USER}
 
 # Si el tamanio del archivo de log es mayor que $LOGSIZE, guardo las últimas $TRUNCO líneas
 
 LOGSIZE=100
-# TODO : el logsize se define en el prepararAmbiente, aca esta harcodeado para que ande  
+# TODO : el logsize se define en el prepararAmbiente, aca esta harcodeado para que ande
 
 tamaniomaximo=$((${LOGSIZE} * ${bytes}))	# Tamanio máximo en bytes
-if [ -f $FILE ];then      
-	tamanioactual=$(wc -c <"$FILE")		
+if [ -f "$FILE" ];then
+	tamanioactual=$(wc -c <"$FILE")
 fi
 
 if [[ "${tamanioactual}" -ge "${tamaniomaximo}" ]]; then
-  sed -i "1,$(($(wc -l $FILE|awk '{print $1}') - $TRUNCO)) d" $FILE
-  echo $WHEN - $WHO - $CMDO - "INFO" - "Log Excedido" >> $FILE 
+  sed -i "1,$(($(wc -l $FILE|awk '{print $1}') - $TRUNCO)) d" "$FILE"
+  echo -e $WHEN - $WHO - $CMDO2 - "INFO" - "Log Excedido" >> "$FILE"
 fi
 
 
-echo $WHEN - $WHO - $CMDO - $TIPO - $MSJE >> $FILE 			
-
+echo -e "$WHEN - $WHO - $CMDO2 - $TIPO - $MSJE" >> "$FILE"
