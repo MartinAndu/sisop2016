@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 IFS='
 '
 TRUE=0
@@ -15,8 +14,6 @@ function msjLog() {
   echo "${MOUT}"
   $GRABITAC "$0" "$MOUT" "$TIPO"
 }
-
-
 
 #Se supone que esto despues no va y se usan las vars de ambiente
 GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
@@ -47,17 +44,22 @@ fechaProxima=0
 		fi
 	done
 
-#for archivo in `ls -A $MAEDIR`
-#do
-#if 
-#done
-SorteoId="1"
+
+# Chequeo de nombres para sorteo id. Si ya existe el archivo, incrementa la variable en 1. 
+if [ ! -d $PROCDIR/sorteos ]; then
+idViejo="1"
+else
+idViejo= ls $PROCDIR/sorteos/ | cut -d'_' -f 1
+((idViejo=idViejo+1))
+fi
+
+SorteoId=$idViejo
+
+
 fechaProxima=$(date -d "$fecha" +%Y%m%d)
 touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt"
 
 for (( i=1;i<=168;i++ )) do 
-echo $RANDOM $i $((j++)); 
-done|sort -k1| cut -d" " -f2> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt"|head -168
-
- 
+echo $RANDOM  $((j++)); 
+done|sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt"|head -168
 
