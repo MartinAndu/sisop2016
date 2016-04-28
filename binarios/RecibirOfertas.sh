@@ -8,7 +8,7 @@ FALSE=1
 
 GRABITAC=$(pwd)"/grabarbitacora.sh"
 MOVER=$(pwd)"/mover.sh"
-
+MENSAJEERROR=""
 
 function msjLog() {
   local MOUT=$1
@@ -25,6 +25,7 @@ function Validar() {
 	local validacionNombre=$(echo $1 | grep ^[a-zA-Z0-9]*_[0-9]*.csv$)
 	local resultadoEvaluacion=$?
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
+		MENSAJEERROR="El nombre del archivo no es valido."
 		return $FALSE
 	fi
 
@@ -32,8 +33,9 @@ function Validar() {
 	local separacionFecha=`echo $1 | sed 's-\([a-zA-Z0-9]*\)_\([0-9]*\).csv$-\2-g'`
 
 	# verifico que el concesionario exista en el maestro de concesionarios
-	local validacionConcesionario=$(cut -d, -f1 concesionarios.csv.xls | grep $separacionConcesionario)
+	local validacionConcesionario=$(cut -d, -f1 "$MAEDIR/concesionarios.csv" | grep $separacionConcesionario)
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
+		MENSAJEERROR="El concesionario no existe en el archivo maestro."
 		return $FALSE
 	fi
 
@@ -46,13 +48,13 @@ function Validar() {
 	resultadoEvaluacion=$?
 	echo "resultadoEvaluacion=$resultadoEvaluacion"
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
-		# la fecha no es valida
+		MENSAJEERROR="La fecha no tiene un nombre valido."
 		return $FALSE
 	fi
 
 	# necesito saber la fecha del ultimo acto de adjudicacion
 	#TODO me quede aca
-	local fechaUltimoActoAdjudicacion=$(cut FechasAdj.csv.xls -d';' -f1)
+	local fechaUltimoActoAdjudicacion=$(cut "$MAEDIR/FechasAdj.csv" -d';' -f1)
 	local validacionFecha=$(date -d "$separacionFecha" +%s)
 	local fechaActual=$(date +%s)
 	local fechaMayor=0
@@ -69,18 +71,26 @@ function Validar() {
 	done
 	echo "validacionFecha=$validacionFecha"
 	echo "fechaActual=$fechaActual"
-	if [ $validacionFecha -le $fechaActual -a $validacionFecha -gt $fechaMayor ] ; then
-		return $TRUE
+	if [ $validacionFecha -le $fechaActual ] ; then
+		if [ $validacionFecha -gt $fechaMayor ] ; then
+			MENSAJEERROR=""
+			return $TRUE
+		else
+			MENSAJEERROR="La fecha es menor que la fecha del ultimo acto de adjudicacion."
+			return $FALSE
+		fi
 	else
+		MENSAJEERROR="La fecha es mayor que la fecha del dia actual."
 		return $FALSE
 	fi
 }
 
 #verifico que haya archivos en ARRIDIR
-GRUPO=`../`
-ARRIDIR=$GRUPO
-ARRIDIR=$ARRIDIR"/arribados"
-MAEDIR=$GRUPO"/maestros"
+## TODO: cambiar esto cuando este lista la parte de las variables globales
+#GRUPO=`../`
+#ARRIDIR=$GRUPO
+ARRIDIR="../arribados"
+MAEDIR="../maestros"
 
 
 if [ ! -d $ARRIDIR ]; then
@@ -108,6 +118,7 @@ do
 		# escribir log
 		#MSJ="NO"
   		#msjLog "${MSJ}" "INFO"
+  		echo "Mensaje de error: $MENSAJEERROR."
 		echo 'NO'
 	else
 		#MoverArchivos($archivo) => OK

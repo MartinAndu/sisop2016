@@ -1,22 +1,21 @@
 #!/bin/bash
 
-#GRABITAC="$BINDIR/grabarbitacora.sh"
-#GRABITAC=$(pwd)"/grabarbitacora.sh"
-
-#Se supone que esto despues no va y se usan las vars de ambiente
+#TODO: Se supone que esto despues no va y se usan las vars de ambiente
 GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
 OKDIR="$GRUPO/aceptados"
 MAEDIR="$GRUPO/maestros"
 PROCDIR="$GRUPO/procesados"
 NOKDIR="$GRUPO/rechazados"
 LOGDIR="$GRUPO/bitacoras"
+BINDIR="$GRUPO/binarios"
+GRABITAC="$BINDIR/GrabarBitacora.sh"
 #
 
 function msjLog() {
   local MSJOUT=$1
   local TIPO=$2
   echo -e "${MSJOUT}"
-  #$GRABITAC "$0" "$MSJOUT" "$TIPO"
+  "$GRABITAC" "$0" "${MSJOUT}" "$TIPO"
 }
 
 function EsArchivoDeTextoPlano(){
@@ -39,7 +38,7 @@ function EsArchivoDuplicado(){
   fi
 }
 
-#PREGUNTAR: NOSE si tiene que ser numeros sin coma o con coma
+#TODO: PREGUNTAR: NOSE si tiene que ser numeros sin coma o con coma
 function EsEstructuraInvalida(){
   local archivo=$1
   if EsArchivoDeTextoPlano $archivo ; then
@@ -126,7 +125,6 @@ function EsOfertaValida(){
   fi
 }
 
-#PENDIENTE
 function RechazarRegistro(){
   local fuente=$1
   local registroOriginalCompleto="\"$2;$3\""
@@ -147,7 +145,6 @@ function RechazarRegistro(){
   #NOVA
 }
 
-#PENDIENTE
 function GrabarOfertaValida(){
   local archivo=$1
   local fechaArchivo=$(echo $archivo | sed 's-^.*\([0-9]\{4\}\)\([0-9]\{2\}\)\([0-9]\{2\}\)\.csv$-\1/\2/\3-g')
@@ -161,7 +158,7 @@ function GrabarOfertaValida(){
   local usuario=$(whoami)
   local fecha=$(date +"%y/%m/%d %H:%M:%S")
 
-  local fechaAdjudicacion='fechaAdjudicacion' #PENDIENTE
+  local fechaAdjudicacion='fechaAdjudicacion' #TODO: Saber la fecha de Adjudicacion posta
   echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOferta;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaAdjudicacion"".txt"
 
   #NOVA
