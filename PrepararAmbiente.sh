@@ -45,6 +45,15 @@ function inicializarAmbiente() {
   export SLEEPTIME
 }
 
+function verificarInstalacion (){
+
+}
+
+function verificarTodo() {
+	verificarInstalacion
+
+verificarExistenciaDeDirectoriosYArchivo
+}
 
 
 MSJ="Prueba Log Sorteo 2016"
@@ -56,5 +65,6 @@ $GRABITAC "$0" "${MSJ}" "INFO"
 
 # Seteo todas las variables de ambiente
 # A partir del archivo de configuración
+verificarTodo
 setearVariablesAmbiente
 inicializarAmbiente
