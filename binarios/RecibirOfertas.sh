@@ -1,13 +1,12 @@
 #!/bin/bash
 
-
 IFS='
 '
 TRUE=0
 FALSE=1
-
-GRABITAC=$(pwd)"/grabarbitacora.sh"
-MOVER=$(pwd)"/mover.sh"
+CICLO=1
+GRABITAC=$"$BINDIR/GrabarBitacora.sh"
+MOVER=$"$BINDIR/MoverArchivo.sh"
 MENSAJEERROR=""
 
 function msjLog() {
@@ -18,69 +17,68 @@ function msjLog() {
 }
 
 function NovedadesPendientes() {
-	echo "NovedadesPendientes..."
+	cantidadArchivos=`ls -A $OKDIR | wc -l`
+	if [ $cantidadArchivos -ge 0 ] ; then
+		return
+	fi
+
+	#llamo a ProcesarOfertas siempre y cuando no este corriendo
+	procesos=$(ps -fea | grep ProcesarOfertas | wc -l)
+	if [ $procesos -eq 2 ]; then
+		#significa que esta corriendo
+		mensaje="Invocacion de ProcesarOfertas pospuesta para el siguiente ciclo."
+		msjLog "$mensaje" "INFO"
+	else
+		#llamo a ProcesarOfertas
+		#TODO falta ponerle el pid en el mensaje y lanzar proceso
+		mensaje="ProcesarOfertas corriendo bajo el no.: "
+		msjLog $mensaje "INFO"
+	fi
 }
 
 function Validar() {
 	local validacionNombre=$(echo $1 | grep ^[a-zA-Z0-9]*_[0-9]*.csv$)
 	local resultadoEvaluacion=$?
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
-		MENSAJEERROR="El nombre del archivo no es valido."
+		MENSAJEERROR="$1 no es un nombre de archivo valido."
 		return $FALSE
 	fi
 
-	local separacionConcesionario=`echo $1 | sed 's-\([a-zA-Z0-9]*\)_\([0-9]*\).csv$-\1-g'`
-	local separacionFecha=`echo $1 | sed 's-\([a-zA-Z0-9]*\)_\([0-9]*\).csv$-\2-g'`
+	local separacionConcesionario=`echo $1 | sed 's-\([a-zA-Z0-9_]*\)_\([0-9]*\).csv$-\1-g'`
+	local separacionFecha=`echo $1 | sed 's-\([a-zA-Z0-9_]*\)_\([0-9]*\).csv$-\2-g'`
 
 	# verifico que el concesionario exista en el maestro de concesionarios
 	local validacionConcesionario=$(cut -d, -f1 "$MAEDIR/concesionarios.csv" | grep $separacionConcesionario)
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
-		MENSAJEERROR="El concesionario no existe en el archivo maestro."
+		MENSAJEERROR="El concesionario $separacionConcesionario no existe en el archivo maestro."
 		return $FALSE
 	fi
 
 	# PARTE DE VALIDACIONES DE FECHA
 	# verifico que sea una fecha valida
-	echo "empiezo a validar las fechas $separacionFecha"
 	local validacionFecha=$(date -d "$separacionFecha" +%y/%m/%d)
-	#eval $validacionFecha
 
 	resultadoEvaluacion=$?
-	echo "resultadoEvaluacion=$resultadoEvaluacion"
 	if [ $resultadoEvaluacion -eq $FALSE ]; then
-		MENSAJEERROR="La fecha no tiene un nombre valido."
+		MENSAJEERROR="La fecha $separacionFecha no tiene un nombre valido."
 		return $FALSE
 	fi
 
-	# necesito saber la fecha del ultimo acto de adjudicacion
-	#TODO me quede aca
-	local fechaUltimoActoAdjudicacion=$(cut "$MAEDIR/FechasAdj.csv" -d';' -f1)
+	# llamo a UltimaFechaAdj para obtener la ultima fecha de adjudicacion
+	local fechaUltimoActoAdjudicacion=$($BINDIR/UltimaFechaAdj.sh)
 	local validacionFecha=$(date -d "$separacionFecha" +%s)
 	local fechaActual=$(date +%s)
-	local fechaMayor=0
-	for fecha in $fechaUltimoActoAdjudicacion
-	do
-		echo "fecha antes sed=$fecha"
-		fecha=`echo $fecha | sed 's-\([0-9]*\)/\([0-9]*\)/\([0-9]*\)$-\2/\1/\3-g'`
-		echo "fecha despues sed=$fecha"
-		fecha_=$(date -d "$fecha" +%s)
-		if [ $fecha_ -ge $fechaMayor ] ; then
-			fechaMayor=$fecha_
-			echo "fechaMayor=$fechaMayor"
-		fi
-	done
-	echo "validacionFecha=$validacionFecha"
-	echo "fechaActual=$fechaActual"
+
 	if [ $validacionFecha -le $fechaActual ] ; then
-		if [ $validacionFecha -gt $fechaMayor ] ; then
+		if [ $validacionFecha -gt $fechaUltimoActoAdjudicacion ] ; then
 			MENSAJEERROR=""
 			return $TRUE
 		else
-			MENSAJEERROR="La fecha es menor que la fecha del ultimo acto de adjudicacion."
+			MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es menor que la fecha del ultimo acto de adjudicacion (`date -d"@$fechaUltimoActoAdjudicacion" +%d/%m/%Y`)."
 			return $FALSE
 		fi
 	else
-		MENSAJEERROR="La fecha es mayor que la fecha del dia actual."
+		MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es mayor que la fecha del dia actual.(`date  +%d/%m/%Y`)"
 		return $FALSE
 	fi
 }
@@ -91,49 +89,82 @@ function Validar() {
 #ARRIDIR=$GRUPO
 ARRIDIR="../arribados"
 MAEDIR="../maestros"
+SLEEPTIME=10
 
+#Validacion del entorno de ejecucion
 
 if [ ! -d $ARRIDIR ]; then
-	echo "arribados=$ARRIDIR"
-	echo "La carpeta no existe. "
-	exit
+	msjLog "Error Critico: La carpeta de archivos arribados no exsite o no tiene permiso de lectura." "ERR"
+	exit 1
 fi
 
-cantidadArchivos=`ls -A $ARRIDIR | wc -l`
-#cantidadArchivos=`echo $cantidadArchivos - 1 | bc`
-
-if [ $cantidadArchivos -eq $FALSE ] ; then
-	# ir a novedades pendientes
-	NovedadesPendientes
+if [ ! -d $NOKDIR ]; then
+	msjLog "Error Critico: La carpeta de archivos rechazados no exsite o no tiene permiso de lectura." "ERR"
+	exit 1
 fi
 
-for archivo in `ls -A $ARRIDIR`
-do
-	echo "archivo=$archivo"
-	Validar $archivo
-	valResultado=$?
-	if [ $valResultado -eq $FALSE ]
-	then
-		#MoverArchivos($archivo)
-		# escribir log
-		#MSJ="NO"
-  		#msjLog "${MSJ}" "INFO"
-  		echo "Mensaje de error: $MENSAJEERROR."
-		echo 'NO'
-	else
-		#MoverArchivos($archivo) => OK
-		#escribir log
-		#MSJ="OK"
-  		#msjLog "${MSJ}" "INFO"
-		echo "OK"
+if [ ! -d $OKDIR ]; then
+	msjLog "Error Critico: La carpeta de archivos aceptados no exsite o no tiene permiso de lectura." "ERR"
+	exit 1
+fi
+
+if [ ! -r "$MAEDIR/concesionarios.csv" ]; then
+	msjLog "Error Critico: No se puede acceder para lectura el archivo concesionarios.csv necesario para la ejecucion del modulo." "ERR"
+	exit 1
+fi
+
+if [ ! -r "$MAEDIR/FechasAdj.csv" ]; then
+	msjLog "Error Critico: No se puede acceder para lectura el archivo FechasAdj.csv necesario para le ejecucion del modulo." "ERR"
+	exit 1
+fi
+
+if [ ! -x "$BINDIR/MoverArchivo.sh" ]; then
+	msjLog "Error critico: El script MoverArchivo.sh no tiene permisos de ejecucion" "ERR"
+	exit 1
+fi
+
+if [ ! -x "$BINDIR/GrabarBitacora.sh" ]; then
+	msjLog "Error critico: El script GrabarBitacora.sh no tiene permisos de ejecucion" "ERR"
+	exit 1
+fi
+
+
+function main()
+{
+	# me fijo cuantos archivos hay en ARRIDIR
+	msjLog "RecibirOfertas ciclo nro. $CICLO" "INFO"
+	cantidadArchivos=`ls -A $ARRIDIR | wc -l`
+
+	# si no hay archivos, llamo a novedades pendientes
+	if [ $cantidadArchivos -eq 0 ] ; then
+		# ir a novedades pendientes
+		NovedadesPendientes
 	fi
+
+	for archivo in `ls -A $ARRIDIR`
+	do
+		Validar $archivo
+		valResultado=$?
+		if [ $valResultado -eq $FALSE ]
+		then
+			#MoverArchivos($archivo)
+			msjLog  "$MENSAJEERROR" "ERR"
+			$MOVER "$ARRIDIR/$archivo" "$NOKDIR" $0
+		else
+			$MOVER "$ARRIDIR/$archivo" "$OKDIR/" $0
+			#MoverArchivos($archivo) => OK
+			#escribir log
+			#MSJ="OK"
+  			#msjLog "${MSJ}" "INFO"
+			echo "OK"
+		fi
+	done
+
+	CICLO=`echo $CICLO + 1 | bc`
+}
+
+#NoTerminaRecibir=1
+while [ 1 ]; do
+	main
+	sleep $SLEEPTIME
 done
-
-# TODO: Prueba para mover. Borrar esto dsp.
-# Esto funciona, no los cree en el repositorio por un tema de prolijidad#
-#$MOVER "$(pwd)/pruebita.txt" "$(pwd)/arribados" "${0}"
-
-# TODO: Prueba para log. Borrar esto dsp.
-#MSJ="Prueba Log Sorteo 2016"
-#msjLog "${MSJ}" "INFO"
-#echo 'NO'
