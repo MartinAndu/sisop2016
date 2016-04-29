@@ -37,19 +37,19 @@ function NovedadesPendientes() {
 }
 
 function Validar() {
-	local validacionNombre=$(echo $1 | grep ^[a-zA-Z0-9]*_[0-9]*.csv$)
-	local resultadoEvaluacion=$?
-	if [ $resultadoEvaluacion -eq $FALSE ]; then
+	local validacionNombre=$(echo $1 | grep '^[0-9]\{4\}_[0-9]\{8\}.csv$')
+
+	if [ ! $validacionNombre != "" ]; then
 		MENSAJEERROR="$1 no es un nombre de archivo valido."
 		return $FALSE
 	fi
 
-	local separacionConcesionario=`echo $1 | sed 's-\([a-zA-Z0-9_]*\)_\([0-9]*\).csv$-\1-g'`
-	local separacionFecha=`echo $1 | sed 's-\([a-zA-Z0-9_]*\)_\([0-9]*\).csv$-\2-g'`
+	local separacionConcesionario=$(echo $1 | sed 's-\([0-9]\{4\}\)_\([0-9]\{8\}\)\.csv$-\1-g')
+	local separacionFecha=$(echo $1 | sed 's-\([0-9]\{4\}\)_\([0-9]\{8\}\)\.csv$-\2-g')
 
 	# verifico que el concesionario exista en el maestro de concesionarios
-	local validacionConcesionario=$(cut -d, -f1 "$MAEDIR/concesionarios.csv" | grep $separacionConcesionario)
-	if [ $resultadoEvaluacion -eq $FALSE ]; then
+	local validacionConcesionario=$(cut -d';' -f2 "$MAEDIR/concesionarios.csv" | grep $separacionConcesionario)
+	if [ ! $validacionConcesionario != "" ]; then
 		MENSAJEERROR="El concesionario $separacionConcesionario no existe en el archivo maestro."
 		return $FALSE
 	fi
@@ -72,7 +72,6 @@ function Validar() {
 	if [ $validacionFecha -le $fechaActual ] ; then
 		if [ $validacionFecha -gt $fechaUltimoActoAdjudicacion ] ; then
 			MENSAJEERROR=""
-			return $TRUE
 		else
 			MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es menor que la fecha del ultimo acto de adjudicacion (`date -d"@$fechaUltimoActoAdjudicacion" +%d/%m/%Y`)."
 			return $FALSE
@@ -81,6 +80,25 @@ function Validar() {
 		MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es mayor que la fecha del dia actual.(`date  +%d/%m/%Y`)"
 		return $FALSE
 	fi
+
+	#parte de validacion de archivo
+	# valido que no sea un archivo vacio, esto es > 0 bytes
+	local validacionTamanio=$(wc -c $ARRIDIR/$1 | cut -d" " -f1)
+
+	if [ $validacionTamanio -eq 0 ]; then
+		MENSAJEERROR="$1 es un archivo vacio."
+		return $FALSE
+	fi
+
+	#valido que sea un archivo de texto
+	local validacionTipo=$(file --mime-type $ARRIDIR/$1 | cut -d" " -f2)
+
+	if [ $validacionTipo != "text/plain" ]; then
+		MENSAJEERROR="$1 no es un archivo de texto. No se puede procesar."
+		return $FALSE
+	fi
+
+	return $TRUE
 }
 
 #verifico que haya archivos en ARRIDIR
