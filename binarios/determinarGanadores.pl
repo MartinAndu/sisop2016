@@ -1,8 +1,12 @@
 #!/usr/bin/env perl
 
+$archivo_padron_suscriptores = "temaL_padron.csv";
+$archivo_maestro_grupos = "Grupos.csv";
+
 sub manejar_error {
 	my $mensaje_error = shift;
 	$mensaje_error .= "\n\t";
+	&finalizar_proceso;
 	die $mensaje_error;
 }
 
@@ -33,7 +37,7 @@ sub inicializar_proceso {
 	close(PIDFILE);
 }
 
-END {
+sub finalizar_proceso {
 	unlink $pid_filename if -e $pid_filename;
 }
 
@@ -72,12 +76,59 @@ sub cargar_resultado_sorteo {
 	while (<SORTEO>) {
 		my ($nro_orden, $nro_sorteado) = split(';', $_);
 		$resultado_sorteo[$nro_sorteado] = $nro_orden;
+		$ordenes_sorteo[$nro_orden] = $nro_sorteado;
 	}
 	close SORTEO;
 }
 
 sub cargar_maestro_grupos {
-	#open (GRUPOS, 
+	open (GRUPOS, "<$configuracion{'MAEDIR'}/$archivo_maestro_grupos")
+		or manejar_error "Error: no se pudo abrir el archivo maestro de grupos";
+	while (<GRUPOS>) {
+		my $cod_estado;
+		my ($nro_grupo, $estado) = split (';', $_); #substr($_, 0, 4);
+		if ($estado eq 'ABIERTO') {$cod_estado = 1;}
+		elsif ($estado eq 'NUEVO') {$cod_estado = 1;}
+		elsif ($estado eq 'CERRADO') {$cod_estado = 0;}
+		else {
+			close GRUPOS;
+			manejar_error "Error: estado de grupo inesperado en el siguiente registro del maestro de grupos: $_";
+		}
+		$maestro_grupos{$nro_grupo} = $cod_estado;
+	}
+	close GRUPOS;
+}
+
+sub cargar_padron_suscriptores {
+	open (PADRON, "<$configuracion{'MAEDIR'}/$archivo_padron_suscriptores")
+		or manejar_error "Error: no se pudo abrir el padron de suscriptores";
+	while (<PADRON>) {
+		my ($nro_grupo, $nro_orden) = split(';', $_);
+		my $contrato_fusionado = $nro_grupo . $nro_orden;
+		$padron_suscriptores{$contrato_fusionado} = $_;
+	}
+	close PADRON;
+}
+
+# Recibe por parametro un nro. de grupo. Devuelve el nro. de orden del ganador por sorteo de ese grupo,
+# su nombre y su nro de sorteo asignado.
+# Requiere que esten cargados el archivo de sorteos y el padron de suscriptores.
+# Requiere que el grupo sea valido (exista en el maestro de grupos, no este cerrado y tenga al menos 
+# un suscriptor participante (flag participa en 1 o 2)).
+sub ganador_sorteo_en_grupo {
+	my $nro_grupo = shift;
+	print "ENTRA con grupo $nro_grupo\n";
+	for (my $nro_sorteo = 1; $nro_sorteo <= $#resultado_sorteo; $nro_sorteo++) {
+		my $nro_orden = sprintf("%03d", $resultado_sorteo[$nro_sorteo]);
+		my $contrato_fusionado = $nro_grupo . $nro_orden;
+		print "Chequeando contrato fusionado $contrato_fusionado\n";
+		next unless exists $padron_suscriptores{$contrato_fusionado};
+		my @registro_suscriptor = split(';', $padron_suscriptores{$contrato_fusionado});
+		my $flag_participa = $registro_suscriptor[5];
+		next unless ($flag_participa eq '1' or $flag_participa eq '2');
+		my $nombre = $registro_suscriptor[2];
+		return ($nro_orden, $nombre, $nro_sorteo);
+	}
 }
 
 sub imprimir_resultado {
@@ -113,16 +164,16 @@ sub mostrar_menu {
 }
 
 sub resultado_general {
-	cargar_resultado_sorteo unless defined(@resultado_sorteo);
+	cargar_resultado_sorteo unless @resultado_sorteo;
 	if ($grabar) {
 		open (SALIDA, ">$configuracion{INFODIR}/$sorteo_id_seleccionado"."_$fecha_adjudicacion_seleccionada.txt")
 			or manejar_error "Error: no se puede escribir el archivo de sorteos";
 	}
-	for ($i = 1; $i <= $#resultado_sorteo; $i++) {
+	for (my $i = 1; $i <= $#resultado_sorteo; $i++) {
 		$nro_sorteo = sprintf("%03d", $i);
 		$nro_orden = sprintf("%03d", $resultado_sorteo[$i]);
 		imprimir_resultado "Nro. de Sorteo $nro_sorteo, le correspondio al numero de orden $nro_orden";
-		if ($i % 23 == 22) {
+		if ($i % 46 == 45) {
 			print "Presione ENTER para continuar";
 			my $pausa = <STDIN>
 		}
@@ -132,11 +183,18 @@ sub resultado_general {
 	}
 }
 
-sub ganadores_por_sorteo {}
+sub ganadores_por_sorteo {
+	cargar_resultado_sorteo unless @resultado_sorteo;
+	my $grupo = 7886;
+	my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
+	imprimir_resultado "Ganador por sorteo del grupo $grupo: Nro de Orden $orden, $nombre (Nro. de sorteo $nro_sorteado)"
+}
 
 &validar_ambiente;
 &inicializar_proceso; 
 &settear_archivo_sorteo_default;
+&cargar_maestro_grupos;
+&cargar_padron_suscriptores;
 while ($opcion ne 'X') {
 	&mostrar_menu;
 	$opcion = <STDIN>;
@@ -148,4 +206,4 @@ while ($opcion ne 'X') {
 	if ($opcion eq 'D') {ganadores_por_sorteo};
 	if ($opcion eq 'S') {ganadores_por_sorteo};
 }
-#&mostrar_menu;
+&finalizar_proceso;
