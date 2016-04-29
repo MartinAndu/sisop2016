@@ -121,7 +121,6 @@ sub ganador_sorteo_en_grupo {
 	for (my $nro_sorteo = 1; $nro_sorteo <= $#resultado_sorteo; $nro_sorteo++) {
 		my $nro_orden = sprintf("%03d", $resultado_sorteo[$nro_sorteo]);
 		my $contrato_fusionado = $nro_grupo . $nro_orden;
-		print "Chequeando contrato fusionado $contrato_fusionado\n";
 		next unless exists $padron_suscriptores{$contrato_fusionado};
 		my @registro_suscriptor = split(';', $padron_suscriptores{$contrato_fusionado});
 		my $flag_participa = $registro_suscriptor[5];
