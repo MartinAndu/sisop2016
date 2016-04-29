@@ -117,7 +117,6 @@ sub cargar_padron_suscriptores {
 # un suscriptor participante (flag participa en 1 o 2)).
 sub ganador_sorteo_en_grupo {
 	my $nro_grupo = shift;
-	print "ENTRA con grupo $nro_grupo\n";
 	for (my $nro_sorteo = 1; $nro_sorteo <= $#resultado_sorteo; $nro_sorteo++) {
 		my $nro_orden = sprintf("%03d", $resultado_sorteo[$nro_sorteo]);
 		my $contrato_fusionado = $nro_grupo . $nro_orden;
@@ -162,6 +161,48 @@ sub mostrar_menu {
 	print "Su opcion: ";
 }
 
+sub mostrar_opciones_ingreso_grupos {
+	print "Especificar grupos para la consulta\n";
+	print "\n";
+	print "A. Un grupo\n";
+	print "B. Lista de grupos\n";
+	print "C. Intervalo de grupos\n";
+	print "D. Todos los grupos\n";
+	print "\n";
+	print "Su opcion (D por defecto): ";
+}
+
+sub min_y_max_lista {
+	my ($min, $max);
+	foreach $elemento (@_) {
+		($min = $elemento) if $elemento < $min;
+		($max = $elemento) if $elemento > $max;
+	}
+	return ($min, $max);
+}
+
+# TODO: logica para pedir y validar un grupo
+sub pedir_un_grupo {
+	return (7886);
+}
+
+sub todos_los_grupos {
+	return keys %maestro_grupos;
+}
+
+sub pedir_grupos {
+	&mostrar_opciones_ingreso_grupos;
+	my @lista_grupos;
+	my $opcion = <STDIN>;
+	chop($opcion);
+	$opcion = uc($opcion);
+	if ($opcion eq 'A') {@lista_grupos = pedir_un_grupo;}
+	elsif ($opcion eq 'B') {}
+	elsif ($opcion eq 'C') {}
+	else {@lista_grupos = todos_los_grupos;}
+	return @lista_grupos;
+}
+
 sub resultado_general {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	if ($grabar) {
@@ -183,6 +224,7 @@ sub resultado_general {
 }
 
 sub ganadores_por_sorteo {
+	my @grupos = pedir_grupos;
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	my $grupo = 7886;
 	my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
