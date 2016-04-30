@@ -1,10 +1,5 @@
 #!/bin/bash
 
-#TODO: Se supone que esto despues no va y se usan las vars de ambiente
-GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
-MAEDIR="$GRUPO/maestros"
-#
-
 ultimaFechaAdj=0
 for fecha in `cut "$MAEDIR/FechasAdj.csv" -d';' -f1`
 do

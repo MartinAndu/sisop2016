@@ -5,15 +5,15 @@ IFS='
 TRUE=0
 FALSE=1
 CICLO=1
-GRABITAC=$"$BINDIR/GrabarBitacora.sh"
-MOVER=$"$BINDIR/MoverArchivo.sh"
+GRABITAC="$BINDIR/GrabarBitacora.sh"
+MOVER="$BINDIR/MoverArchivo.sh"
 MENSAJEERROR=""
 
 function msjLog() {
   local MOUT=$1
   local TIPO=$2
   echo "${MOUT}"
-  $GRABITAC "$0" "$MOUT" "$TIPO"
+  "$GRABITAC" "$0" "$MOUT" "$TIPO"
 }
 
 function NovedadesPendientes() {
@@ -56,10 +56,10 @@ function Validar() {
 
 	# PARTE DE VALIDACIONES DE FECHA
 	# verifico que sea una fecha valida
-	local validacionFecha=$(date -d "$separacionFecha" +%y/%m/%d)
+	date -d "$separacionFecha" +%y/%m/%d &> /dev/zero
 
 	resultadoEvaluacion=$?
-	if [ $resultadoEvaluacion -eq $FALSE ]; then
+	if [ $resultadoEvaluacion -ne $TRUE ]; then
 		MENSAJEERROR="La fecha $separacionFecha no tiene un nombre valido."
 		return $FALSE
 	fi
@@ -102,11 +102,7 @@ function Validar() {
 }
 
 #verifico que haya archivos en ARRIDIR
-## TODO: cambiar esto cuando este lista la parte de las variables globales
-#GRUPO=`../`
-#ARRIDIR=$GRUPO
-ARRIDIR="../arribados"
-MAEDIR="../maestros"
+#TODO: variable hardcodeada
 SLEEPTIME=10
 
 #Validacion del entorno de ejecucion
@@ -165,11 +161,10 @@ function main()
 		valResultado=$?
 		if [ $valResultado -eq $FALSE ]
 		then
-			#MoverArchivos($archivo)
 			msjLog  "$MENSAJEERROR" "ERR"
-			$MOVER "$ARRIDIR/$archivo" "$NOKDIR" $0
+			"$MOVER" "$ARRIDIR/$archivo" "$NOKDIR" $0
 		else
-			$MOVER "$ARRIDIR/$archivo" "$OKDIR/" $0
+			"$MOVER" "$ARRIDIR/$archivo" "$OKDIR" $0
 			#MoverArchivos($archivo) => OK
 			#escribir log
 			#MSJ="OK"
@@ -180,8 +175,6 @@ function main()
 
 	CICLO=`echo $CICLO + 1 | bc`
 }
-
-#NoTerminaRecibir=1
 while [ 1 ]; do
 	main
 	sleep $SLEEPTIME

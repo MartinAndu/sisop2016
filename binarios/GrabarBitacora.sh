@@ -24,8 +24,8 @@ CMDO2=$(echo $CMDO | sed "s|^.*\/\(.*\).sh$|\1|g")
 
 #NOVA {
 # TODO: el PATH del FILE  no esta bien, esta harcodeado porque no existe la variable de ambiente aun
-GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
-LOGDIR="$GRUPO/bitacoras"
+#GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
+#LOGDIR="$GRUPO/bitacoras"
 LOGEXT='.log'
 FILE="${LOGDIR}"/"${CMDO2}"."${LOGEXT}"
 #NOVA }

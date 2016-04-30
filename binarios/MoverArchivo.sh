@@ -5,7 +5,7 @@
 # $3 comando que lo invoca (opcional), se pasa como $0
 
 
-GRABITAC=$(pwd)"/GrabarBitacora.sh"
+GRABITAC="$BINDIR/GrabarBitacora.sh"
 
 
 FILE=`basename "$1"`
