@@ -242,7 +242,6 @@ sub formato_grupo_valido {
 	return ($grupo =~ /\d{4}/);
 }
 
-# TODO: logica para pedir y validar un grupo
 sub pedir_un_grupo {
 	while (1) {
 		print "Ingrese el nro. de grupo en 4 digitos (Ej. 7886): ";
@@ -316,7 +315,26 @@ sub pedir_lista_grupos {
 }
 
 sub pedir_rango_grupos {
-	return (7888, 7889, 7890, 7891, 7892, 7893);
+	my @grupos_validos;
+	until (@grupos_validos) {
+		my ($grupo_desde_rango, $grupo_hasta_rango);
+		while (1) {
+			print "Ingrese el grupo 'Desde' del rango (4 digitos): ";
+			$grupo_desde_rango = <STDIN>;
+			chomp($grupo_desde_rango);
+			last if formato_grupo_valido($grupo_desde_rango);
+			print "Formato de grupo invalido. El nro. de grupo debe estar compuesto por 4 digitos\n";
+		}
+		while (1) {
+			print "Ingrese el grupo 'Hasta' del rango (4 digitos): ";
+			$grupo_hasta_rango = <STDIN>;
+			chomp($grupo_hasta_rango);
+			last if formato_grupo_valido($grupo_hasta_rango);
+			print "Formato de grupo invalido. El nro. de grupo debe estar compuesto por 4 digitos\n";
+		}
+		@grupos_validos = validar_y_filtrar_lista_grupos($grupo_desde_rango..$grupo_hasta_rango);
+	}
+	return @grupos_validos;
 }
 
 sub pedir_grupos {
