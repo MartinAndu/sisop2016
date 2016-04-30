@@ -45,15 +45,18 @@ fechaProxima=0
 	done
 
 
+idActual="1"
+SorteoId=ls $PROCDIR/sorteos/ | cut -d'_' -f 1
+
 # Chequeo de nombres para sorteo id. Si ya existe el archivo, incrementa la variable en 1. 
-if [ ! -d $PROCDIR/sorteos ]; then
-idViejo="1"
-else
-idViejo= ls $PROCDIR/sorteos/ | cut -d'_' -f 1
-((idViejo=idViejo+1))
+if [ -d $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt" ]; then
+idActual=`echo "$SorteoId + 1" | bc`
 fi
 
-SorteoId=$idViejo
+#idViejo=`echo "$idViejo + 1" | bc`; echo "total=" $idViejo
+
+
+SorteoId=$idActual
 
 
 fechaProxima=$(date -d "$fecha" +%Y%m%d)
