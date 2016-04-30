@@ -44,23 +44,29 @@ sub finalizar_proceso {
 }
 
 sub buscar_archivos_sorteo {
+	@archivos_sorteo = ();
 	opendir(DIRECTORIO_SORTEOS, "$configuracion{'PROCDIR'}/sorteos")
 		or manejar_error "Error: no se encuentra directorio de archivos de sorteos. Contacte al administrador para recuperar la instalacion del sistema";
 	while(my $archivo_sorteo = readdir DIRECTORIO_SORTEOS) {
 		push(@archivos_sorteo, $archivo_sorteo) unless $archivo_sorteo eq '.' or $archivo_sorteo eq '..';
 	}
 	closedir(DIRECTORIO_SORTEOS);
+	if (!@archivos_sorteo) {
+		manejar_error "Error: no se encontraron sorteos. Genere el sorteo para la adjudicacion y vuelva a ejecutar el comando";
+	}
 	return @archivos_sorteo;
+}
+
+sub obtener_id_sorteo_y_fecha_por_nombre_archivo {
+	my $archivo = shift;
+	return split('_', (split('\.', $archivo))[0]);
 }
 
 sub settear_archivo_sorteo_default {
 	my ($max_fecha_adj, $max_sorteo_id, $max_archivo);
-	@archivos_sorteo_disponibles = &buscar_archivos_sorteo;
-	if (!@archivos_sorteo_disponibles) {
-		manejar_error "Error: no se encontraron sorteos. Genere el sorteo de la adjudicacion y vuelva a ejecutar el comando";
-	}
-	foreach $archivo (@archivos_sorteo_disponibles) {
-		my ($sorteo_id, $fecha_adjudicacion) = split('_', (split('\.', $archivo))[0]);
+	my @archivos_sorteo_disponibles = &buscar_archivos_sorteo;
+	foreach my $archivo (@archivos_sorteo_disponibles) {
+		my ($sorteo_id, $fecha_adjudicacion) = obtener_id_sorteo_y_fecha_por_nombre_archivo($archivo);
 		if ($fecha_adjudicacion > $max_fecha_adj or ($fecha_adjudicacion == $max_fecha_adj and $sorteo_id > $max_sorteo_id)) {
 			$max_fecha_adj = $fecha_adjudicacion;
 			$max_sorteo_id = $sorteo_id; 
@@ -228,6 +234,15 @@ sub mostrar_opciones_ingreso_grupos {
 	print "Su opcion (D por defecto): ";
 }
 
+sub mostrar_opciones_seleccion_archivo_sorteo {
+	print "Como desea seleccionar el archivo de sorteo?\n";
+	print "\n";
+	print "A. Ingresando manualmente el nombre del archivo\n";
+	print "B. Seleccionandolo de una lista de archivos disponibles\n";
+	print "\n";
+	print "Su opcion (B por defecto): ";	
+}
+
 sub min_y_max_lista {
 	my ($min, $max);
 	foreach $elemento (@_) {
@@ -350,6 +365,57 @@ sub pedir_grupos {
 	return @lista_grupos;
 }
 
+sub comparar_por_fecha_despues_por_id_sorteo {
+	my ($id_sorteo_a, $fecha_a) = split("_", $a);
+	my ($id_sorteo_b, $fecha_b) = split("_", $b);
+	$fecha_a cmp $fecha_b or $id_sorteo_a <=> $id_sorteo_b;
+}
+
+sub seleccionar_archivo_desde_lista {
+	my @archivos_sorteo_disponibles = 
+			sort comparar_por_fecha_despues_por_id_sorteo(&buscar_archivos_sorteo);
+	print "Archivos Disponibles:\n";
+	for (my $i = 0; $i <= $#archivos_sorteo_disponibles; $i++) {
+		print (($i + 1) . ") " . $archivos_sorteo_disponibles[$i] . "\n");
+	}
+	print "\nSu opcion: ";
+	my $opcion = <STDIN>;
+	chomp($opcion);
+	while ($opcion !~ /\d+/ or $opcion < 1 or $opcion > ($#archivos_sorteo_disponibles + 1)) {
+		print "Debe ingresar un nro. entre 1 y " . ($#archivos_sorteo_disponibles + 1) . ". Reintente: ";
+		$opcion = <STDIN>;
+		chomp($opcion);
+	}
+	$archivo_sorteo_seleccionado = $archivos_sorteo_disponibles[$opcion - 1];
+	($sorteo_id_seleccionado, $fecha_adjudicacion_seleccionada) =
+			obtener_id_sorteo_y_fecha_por_nombre_archivo($archivo_sorteo_seleccionado);
+	cargar_resultado_sorteo;
+}
+
+sub seleccionar_archivo_por_nombre {
+	my $nombre_archivo;
+	while (1) {
+		print "Ingrese nombre del archivo de sorteo (formato <id_sorteo>_<fecha_adjudicacion>.txt): \n";
+		$nombre_archivo = <STDIN>;
+		chomp($nombre_archivo);
+		last if $nombre_archivo and -e "$configuracion{'PROCDIR'}/sorteos/$nombre_archivo";
+		print "No se encontro un archivo de sorteos con el nombre indicado. Por favor vuelva a intentar.\n"
+	}
+	$archivo_sorteo_seleccionado = $nombre_archivo;
+	($sorteo_id_seleccionado, $fecha_adjudicacion_seleccionada) =
+			obtener_id_sorteo_y_fecha_por_nombre_archivo($archivo_sorteo_seleccionado);
+	cargar_resultado_sorteo;
+}
+
+sub seleccionar_archivo_sorteo {
+	&mostrar_opciones_seleccion_archivo_sorteo;
+	my $opcion = <STDIN>;
+	chomp($opcion);
+	$opcion = uc($opcion);
+	if ($opcion eq 'A')	{seleccionar_archivo_por_nombre;}
+	else {seleccionar_archivo_desde_lista;}
+}
+
 sub resultado_general {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	if ($grabar) {
@@ -413,6 +479,6 @@ while ($opcion ne 'X') {
 	if ($opcion eq 'B') {ganadores_por_sorteo};
 	if ($opcion eq 'C') {ganadores_por_licitacion};
 	if ($opcion eq 'D') {ganadores_por_sorteo};
-	if ($opcion eq 'S') {ganadores_por_sorteo};
+	if ($opcion eq 'S') {seleccionar_archivo_sorteo};
 }
 &finalizar_proceso;
