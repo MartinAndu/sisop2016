@@ -7,11 +7,11 @@
 
 GRABITAC=$(pwd)"/GrabarBitacora.sh"
 
-  
-FILE=`basename $1`
-DEST=$2
-ORIG=`dirname $1`
-CMD=$3
+
+FILE=`basename "$1"`
+DEST="$2"
+ORIG=`dirname "$1"`
+CMD="$3"
 
 CMDGRABA="false"
 
@@ -35,7 +35,7 @@ fi
 # Revisa que se reciban si o si dos parametros
 if [ $# -lt 2 ]; then
   MOUT="Se deben ingresar al menos dos parametros para Mover"
-  msjLog "${MOUT}" "ERR"  
+  msjLog "${MOUT}" "ERR"
   exit 1
 fi
 
@@ -73,7 +73,7 @@ if [ -f "$FILEDEST" ]; then
     mkdir ${DUPLI}
     echo "El directorio \"${DUPLI}\" ha sido creado"
   fi
-  
+
   # Ya existe DUPLICADOS
   if [ ! -f "$DUPLI"/"$FILE" ]; then
      mv "${1}" "${DUPLI}"
@@ -81,15 +81,15 @@ if [ -f "$FILEDEST" ]; then
      exit 0
   else
     # tengo que depositarlo con secuencia nnn si ya se encuentra
-    NNN=0 
+    NNN=0
 
-    for ARCH in "${DUPLI}"/*    
+    for ARCH in "${DUPLI}"/*
     do
        if [ "${ARCH%%.*}" = "${DUPLI}"/"${FILE%%.*}" ]; then
         NNN=$(printf "%03d" $((NNN+1)))
       fi
     done
- 
+
     NEWFILE="${DUPLI}"/"${FILE}"."${NNN}"
     mv "${1}" "${NEWFILE}"
     echo "El archivo \"$FILE\" ha sido movido con secuencia $NNN a duplicados"
@@ -102,4 +102,3 @@ else
   msjLog "$MOUT" "INFO"
   exit 0
 fi
-  
