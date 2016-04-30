@@ -1,9 +1,8 @@
 #!/bin/bash
 
-GRUPO=~/grupo02;
-CONFG=$(pwd)"/CONFDIR/CIPAL.cnf"
-GRABITAC=$(pwd)"/binarios/GrabarBitacora.sh"
-
+GRUPO=~/grupo02
+CONFG="$GRUPO/$CONFDIR/CIPAL.cnf"
+GRABITAC="$GRUPO/binarios/GrabarBitacora.sh"
 
 
 escribirConfig () {
@@ -35,68 +34,69 @@ escribirConfig () {
 	#SLEEPTIME
 	echo "SLEEPTIME=$GRUPO/$SLEEPTIME=$WHO=$WHEN" >> $CONFG
 
-
-	local msj="Archivo de configuracion creado"
-	$GRABITAC "$0" "${msj}" "INFO"
-
+	echo "Archivo de configuracion creado"
 }
 
 moverArchivos (){
-	totalArchivos=`ls $(pwd)/BIN`
+	totalArchivos=`ls $(pwd)/binarios`
 
 	echo "Instalando programas"
 
+
 	for archivoEjecutables in ${totalArchivos[*]}
 	do
-		cp $(pwd)/BIN/$archivoEjecutables $GRUPO/$BINDIR
+		cp $(pwd)/binarios/$archivoEjecutables $GRUPO/$BINDIR
 	done 
 
 	echo "Copiando archivos Maestros"
 
-	totalArchivos=`ls $(pwd)/MAE`
+	totalArchivos=`ls $(pwd)/maestros`
 
 	for archivoMaestros in ${totalArchivos[*]}
 	do
-		cp $(pwd)/MAE/$archivoEjecutables $GRUPO/$MAEDIR
+		cp $(pwd)/maestros/$archivoMaestros $GRUPO/$MAEDIR
 	done 
 
 }
 
+
+definirDirectorio (){
+	echo "Creando archivos de directorio.."
+	BINDIR="binarios"
+	MAEDIR="maestros"
+	ARRIDIR="arribados"
+	OKDIR="aceptados"
+	PROCDIR="procesados"
+	INFODIR="informes"
+	LOGDIR="bitacoras"
+	NOKDIR="rechazados"
+	CONFDIR="config"
+} 
+
 instalacion (){
 
-	#Escribe el archivo de configuracion
+	# Define nombre de directorios.
+	definirDirectorio
+	# Escribe el archivo de configuracion.
  	escribirConfig
 
 
-	GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
- 	BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
-  	MAEDIR=$(grep '^MAEDIR' $CONFG | cut -d '=' -f 2)
-  	ARRIDIR=$(grep '^ARRIDIR' $CONFG | cut -d '=' -f 2)
-  	OKDIR=$(grep '^OKDIR' $CONFG | cut -d '=' -f 2)
-  	PROCDIR=$(grep '^PROCDIR' $CONFG | cut -d '=' -f 2)
-  	INFODIR=$(grep '^INFODIR' $CONFG | cut -d '=' -f 2)
-  	LOGDIR=$(grep '^LOGDIR' $CONFG | cut -d '=' -f 2)
-  	NOKDIR=$(grep '^NOKDIR' $CONFG | cut -d '=' -f 2)
-  	LOGSIZE=$(grep '^LOGSIZE' $CONFG | cut -d '=' -f 2)
-  	SLEEPTIME=$(grep '^SLEEPTIME' $CONFG | cut -d '=' -f 2)
-
-
-
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR})
-	echo "Creando Estructuras de directorio" 
+  	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${pROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR})
+	echo "Creando Estructuras de directorio.." 
 
 	for index in ${variables[*]}
 	do
-		#echo "Creando $index"
+		echo "Creando $index"
 		mkdir -p $GRUPO/$index
 	done
 
 	#Mueve los ejecutables y los archivos maestros
-	#moverArchivos
+	moverArchivos
 
 	echo "Fin instalacion"
 }
 
 
+# instalacion
 instalacion
-

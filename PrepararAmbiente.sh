@@ -2,28 +2,27 @@
 
 #Prepara Ambiente
 
-GRABITAC=$(pwd)"/binarios/GrabarBitacora.sh"
-MOVER=$(pwd)"/binarios/mover.sh"
 
 GRUPO=~/grupo02;
-AFRACONFIG=$(pwd)"/CONFDIR/CIPAL.conf"
-	
+CONFG="$GRUPO/$CONFDIR/CIPAL.cnf"
+GRABITAC="$GRUPO/binarios/GrabarBitacora.sh"
+MOVER="$GRUPO/binarios/mover.sh"
 
 
 
 # Desde el archivo de configuración tomo todas las variables
 function setearVariablesAmbiente() {
-	GRUPO=$(grep '^GRUPO' $CNF | cut -d '=' -f 2)
- 	BINDIR=$(grep '^BINDIR' $CNF | cut -d '=' -f 2)
-  	MAEDIR=$(grep '^MAEDIR' $CNF | cut -d '=' -f 2)
-  	ARRIDIR=$(grep '^ARRIDIR' $CNF | cut -d '=' -f 2)
-  	OKDIR=$(grep '^OKDIR' $CNF | cut -d '=' -f 2)
-  	PROCDIR=$(grep '^PROCDIR' $CNF | cut -d '=' -f 2)
-  	INFODIR=$(grep '^INFODIR' $CNF | cut -d '=' -f 2)
-  	LOGDIR=$(grep '^LOGDIR' $CNF | cut -d '=' -f 2)
-  	NOKDIR=$(grep '^NOKDIR' $CNF | cut -d '=' -f 2)
-  	LOGSIZE=$(grep '^LOGSIZE' $CNF | cut -d '=' -f 2)
-  	SLEEPTIME=$(grep '^SLEEPTIME' $CNF | cut -d '=' -f 2)
+	GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
+ 	BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
+  	MAEDIR=$(grep '^MAEDIR' $CONFG | cut -d '=' -f 2)
+  	ARRIDIR=$(grep '^ARRIDIR' $CONFG | cut -d '=' -f 2)
+  	OKDIR=$(grep '^OKDIR' $CONFG | cut -d '=' -f 2)
+  	PROCDIR=$(grep '^PROCDIR' $CONFG | cut -d '=' -f 2)
+  	INFODIR=$(grep '^INFODIR' $CONFG | cut -d '=' -f 2)
+  	LOGDIR=$(grep '^LOGDIR' $CONFG | cut -d '=' -f 2)
+  	NOKDIR=$(grep '^NOKDIR' $CONFG | cut -d '=' -f 2)
+  	LOGSIZE=$(grep '^LOGSIZE' $CONFG | cut -d '=' -f 2)
+  	SLEEPTIME=$(grep '^SLEEPTIME' $CONFG | cut -d '=' -f 2)
 }
 
 
@@ -49,10 +48,30 @@ function verificarInstalacion (){
 
 }
 
-function verificarTodo() {
-	verificarInstalacion
+# Verifica si el ambiente ya ha sido inicializado
+# Devuelve 1 si ya fue inicializado, 0 sino
+function verificarAmbienteInicializado() {
+  i=0
+  variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR})
+  for VAR in "${variables[@]}"
+  do
+    if [[ ! -z "$VAR" ]]; then # si la variable no está vacía es porque fue inicializado
+      ((i+=1))
+    fi
+  done
+  if [ "$i" -gt 0 ]; then
+    MSJ="Ambiente ya inicializado, para reiniciar termine la sesión e ingrese nuevamente"
+    msjLog "$MSJ" "ERR"
+    return 1
+  fi
+  return 0
+}
 
-verificarExistenciaDeDirectoriosYArchivo
+
+function verificarTodo() {
+	#verificarInstalacion
+	#verificarExistenciaDeDirectoriosYArchivo
+	verificarAmbienteInicializado
 }
 
 
