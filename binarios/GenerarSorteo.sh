@@ -46,23 +46,21 @@ fechaProxima=0
 
 
 idActual="1"
-SorteoId=ls $PROCDIR/sorteos/ | cut -d'_' -f 1
 
-# Chequeo de nombres para sorteo id. Si ya existe el archivo, incrementa la variable en 1. 
-if [ -d $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt" ]; then
-idActual=`echo "$SorteoId + 1" | bc`
-fi
-
-#idViejo=`echo "$idViejo + 1" | bc`; echo "total=" $idViejo
-
+for archivo in  `ls -A "$PROCDIR/sorteos"`
+do
+    SorteoId=$(echo $archivo | cut -d'_' -f1)
+    if [ $SorteoId = $idActual ]; then
+        idActual=`echo "$SorteoId+1" | bc`
+    fi
+done
 
 SorteoId=$idActual
 
-
 fechaProxima=$(date -d "$fecha" +%Y%m%d)
-touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt"
+touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"
 
 for (( i=1;i<=168;i++ )) do 
 echo $RANDOM  $((j++)); 
-done|sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".txt"|head -168
+done|sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"|head -168
 
