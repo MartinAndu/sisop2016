@@ -374,7 +374,7 @@ sub comparar_por_fecha_despues_por_id_sorteo {
 sub seleccionar_archivo_desde_lista {
 	my @archivos_sorteo_disponibles = 
 			sort comparar_por_fecha_despues_por_id_sorteo(&buscar_archivos_sorteo);
-	print "Archivos Disponibles:";
+	print "Archivos Disponibles:\n";
 	for (my $i = 0; $i <= $#archivos_sorteo_disponibles; $i++) {
 		print (($i + 1) . ") " . $archivos_sorteo_disponibles[$i] . "\n");
 	}
@@ -393,7 +393,18 @@ sub seleccionar_archivo_desde_lista {
 }
 
 sub seleccionar_archivo_por_nombre {
-	
+	my $nombre_archivo;
+	while (1) {
+		print "Ingrese nombre del archivo de sorteo (formato <id_sorteo>_<fecha_adjudicacion>.txt): \n";
+		$nombre_archivo = <STDIN>;
+		chomp($nombre_archivo);
+		last if $nombre_archivo and -e "$configuracion{'PROCDIR'}/sorteos/$nombre_archivo";
+		print "No se encontro un archivo de sorteos con el nombre indicado. Por favor vuelva a intentar.\n"
+	}
+	$archivo_sorteo_seleccionado = $nombre_archivo;
+	($sorteo_id_seleccionado, $fecha_adjudicacion_seleccionada) =
+			obtener_id_sorteo_y_fecha_por_nombre_archivo($archivo_sorteo_seleccionado);
+	cargar_resultado_sorteo;
 }
 
 sub seleccionar_archivo_sorteo {
