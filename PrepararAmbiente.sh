@@ -18,11 +18,11 @@ function setearVariablesAmbiente() {
   	MAEDIR=$(grep '^MAEDIR' $CNF | cut -d '=' -f 2)
   	ARRIDIR=$(grep '^ARRIDIR' $CNF | cut -d '=' -f 2)
   	OKDIR=$(grep '^OKDIR' $CNF | cut -d '=' -f 2)
-  	PROCDIR=$(grep '^PROCDIR' $CNF | cut -d '=' function 2)
-  	INFODIR=$(grep '^INFODIR' $CNF | cut -d '=' f 2)
-  	LOGDIR=$(grep '^LOGDIR' $CNF | cut -d '=' f 2)
-  	NOKDIR=$(grep '^NOKDIR' $CNF | cut -d '=' f 2)
-  	LOGSIZE=$(grep '^LOGSIZE' $CNF | cut -d '=' f 2)
+  	PROCDIR=$(grep '^PROCDIR' $CNF | cut -d '=' -f 2)
+  	INFODIR=$(grep '^INFODIR' $CNF | cut -d '=' -f 2)
+  	LOGDIR=$(grep '^LOGDIR' $CNF | cut -d '=' -f 2)
+  	NOKDIR=$(grep '^NOKDIR' $CNF | cut -d '=' -f 2)
+  	LOGSIZE=$(grep '^LOGSIZE' $CNF | cut -d '=' -f 2)
   	SLEEPTIME=$(grep '^SLEEPTIME' $CNF | cut -d '=' -f 2)
 }
 
