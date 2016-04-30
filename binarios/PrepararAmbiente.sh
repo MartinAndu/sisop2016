@@ -12,17 +12,17 @@ MOVER="$GRUPO/binarios/mover.sh"
 
 # Desde el archivo de configuración tomo todas las variables
 function setearVariablesAmbiente() {
-	GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
- 	BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
-  	MAEDIR=$(grep '^MAEDIR' $CONFG | cut -d '=' -f 2)
-  	ARRIDIR=$(grep '^ARRIDIR' $CONFG | cut -d '=' -f 2)
-  	OKDIR=$(grep '^OKDIR' $CONFG | cut -d '=' -f 2)
-  	PROCDIR=$(grep '^PROCDIR' $CONFG | cut -d '=' -f 2)
-  	INFODIR=$(grep '^INFODIR' $CONFG | cut -d '=' -f 2)
-  	LOGDIR=$(grep '^LOGDIR' $CONFG | cut -d '=' -f 2)
-  	NOKDIR=$(grep '^NOKDIR' $CONFG | cut -d '=' -f 2)
-  	LOGSIZE=$(grep '^LOGSIZE' $CONFG | cut -d '=' -f 2)
-  	SLEEPTIME=$(grep '^SLEEPTIME' $CONFG | cut -d '=' -f 2)
+  GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
+  BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
+    MAEDIR=$(grep '^MAEDIR' $CONFG | cut -d '=' -f 2)
+    ARRIDIR=$(grep '^ARRIDIR' $CONFG | cut -d '=' -f 2)
+    OKDIR=$(grep '^OKDIR' $CONFG | cut -d '=' -f 2)
+    PROCDIR=$(grep '^PROCDIR' $CONFG | cut -d '=' -f 2)
+    INFODIR=$(grep '^INFODIR' $CONFG | cut -d '=' -f 2)
+    LOGDIR=$(grep '^LOGDIR' $CONFG | cut -d '=' -f 2)
+    NOKDIR=$(grep '^NOKDIR' $CONFG | cut -d '=' -f 2)
+    LOGSIZE=$(grep '^LOGSIZE' $CONFG | cut -d '=' -f 2)
+    SLEEPTIME=$(grep '^SLEEPTIME' $CONFG | cut -d '=' -f 2)
 }
 
 
@@ -44,9 +44,7 @@ function inicializarAmbiente() {
   export SLEEPTIME
 }
 
-function verificarInstalacion (){
 
-}
 
 # Verifica si el ambiente ya ha sido inicializado
 # Devuelve 1 si ya fue inicializado, 0 sino
@@ -61,7 +59,7 @@ function verificarAmbienteInicializado() {
   done
   if [ "$i" -gt 0 ]; then
     MSJ="Ambiente ya inicializado, para reiniciar termine la sesión e ingrese nuevamente"
-    msjLog "$MSJ" "ERR"
+    $GRABITAC "$0" "$MSJ" "ERR"
     return 1
   fi
   return 0
@@ -69,9 +67,9 @@ function verificarAmbienteInicializado() {
 
 
 function verificarTodo() {
-	#verificarInstalacion
-	#verificarExistenciaDeDirectoriosYArchivo
-	verificarAmbienteInicializado
+  #verificarInstalacion
+  #verificarExistenciaDeDirectoriosYArchivo
+  verificarAmbienteInicializado
 }
 
 
