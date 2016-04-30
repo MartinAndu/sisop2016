@@ -9,6 +9,7 @@ NOKDIR="$GRUPO/rechazados"
 LOGDIR="$GRUPO/bitacoras"
 BINDIR="$GRUPO/binarios"
 GRABITAC="$BINDIR/GrabarBitacora.sh"
+MOVER="$BINDIR/MoverArchivo.sh"
 #
 
 function msjLog() {
@@ -55,12 +56,11 @@ function EsEstructuraInvalida(){
 
 function RechazarArchivo(){
   local archivo=$1
-  #MoverArchivo "$OKDIR/$archivo" "$NOKDIR"
+  "$MOVER" "$OKDIR/$archivo" "$NOKDIR/"
   cantidadArchivosRechazados=$(($cantidadArchivosRechazados+1))
 }
 
 function EsOfertaValida(){
-  #local motivoRechazo=''
   motivoRechazo='' #La uso como variable global
   local contratoFusionado=$1
   local importeOferta=$2
@@ -118,8 +118,6 @@ function EsOfertaValida(){
   if [ "$motivoRechazo" = '' ] ; then
     return 0 #TRUE
   else
-    #Quizas el RechazarRegistro podria ir aca asi paso el parametro motivoRechazo sin tanto problema
-    #RechazarRegistro
     #echo 'motivoRechazo: '$motivoRechazo
     return 1 #FALSE
   fi
@@ -158,8 +156,26 @@ function GrabarOfertaValida(){
   local usuario=$(whoami)
   local fecha=$(date +"%y/%m/%d %H:%M:%S")
 
-  local fechaAdjudicacion='fechaAdjudicacion' #TODO: Saber la fecha de Adjudicacion posta
-  echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOferta;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaAdjudicacion"".txt"
+  local fechaProximoActoAdjudicacion=$($BINDIR/ProximaFechaAdj.sh)
+
+  #TODO: Nose si hay que validar fechas
+  # local validacionFecha=$(date -d "$separacionFecha" +%s)
+	# local fechaActual=$(date +%s)
+  #
+	# if [ $validacionFecha -le $fechaActual ] ; then
+	# 	if [ $validacionFecha -gt $fechaUltimoActoAdjudicacion ] ; then
+	# 		MENSAJEERROR=""
+	# 	else
+	# 		MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es menor que la fecha del ultimo acto de adjudicacion (`date -d"@$fechaUltimoActoAdjudicacion" +%d/%m/%Y`)."
+	# 		return $FALSE
+	# 	fi
+	# else
+	# 	MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es mayor que la fecha del dia actual.(`date  +%d/%m/%Y`)"
+	# 	return $FALSE
+	# fi
+
+  fechaProximoActoAdjudicacion=$(date -d"@$fechaProximoActoAdjudicacion" +%Y%m%d)
+  echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOferta;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaProximoActoAdjudicacion"".txt"
 
   #NOVA
   echo "GrabarOfertaValida   > $fechaAdjudicacion"".txt"
@@ -199,7 +215,7 @@ function Procesar(){
   msjLog "Cantidad de registros leídos:\t$cantidadRegistrosLeidos" "INFO"
   msjLog "Cantidad de ofertas válidas:\t$cantidadRegistrosValidos" "INFO"
   msjLog "Cantidad de ofertas rechazadas:\t$cantidadRegistrosRechazados" "INFO"
-  #MoverArchivo "$OKDIR/$archivo" "$PROCDIR/procesadas"
+  "$MOVER" "$OKDIR/$archivo" "$PROCDIR/procesadas/"
   cantidadArchivosProcesados=$(($cantidadArchivosProcesados+1))
 }
 
