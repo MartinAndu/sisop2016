@@ -185,7 +185,10 @@ function Procesar(){
   local cantidadRegistrosValidos=0
   local cantidadRegistrosRechazados=0
   local IFS=";"
-  while read contratoFusionado importeOferta ; do
+
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    contratoFusionado=$(echo "$line" | cut -f1 -d';')
+    importeOferta=$(echo "$line" | cut -f2 -d';')
     echo ''
     cantidadRegistrosLeidos=$(($cantidadRegistrosLeidos+1))
     if EsOfertaValida $contratoFusionado $importeOferta ; then
@@ -199,6 +202,7 @@ function Procesar(){
       cantidadRegistrosRechazados=$(($cantidadRegistrosRechazados+1))
     fi
   done < "$OKDIR/$archivo"
+
   echo '' #NOVA
   msjLog "Cantidad de registros leídos:\t$cantidadRegistrosLeidos" "INFO"
   msjLog "Cantidad de ofertas válidas:\t$cantidadRegistrosValidos" "INFO"
