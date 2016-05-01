@@ -1,17 +1,5 @@
 #!/bin/bash
 
-#TODO: Se supone que esto despues no va y se usan las vars de ambiente
-GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
-OKDIR="$GRUPO/aceptados"
-MAEDIR="$GRUPO/maestros"
-PROCDIR="$GRUPO/procesados"
-NOKDIR="$GRUPO/rechazados"
-LOGDIR="$GRUPO/bitacoras"
-BINDIR="$GRUPO/binarios"
-GRABITAC="$BINDIR/GrabarBitacora.sh"
-MOVER="$BINDIR/MoverArchivo.sh"
-#
-
 function msjLog() {
   local MSJOUT=$1
   local TIPO=$2

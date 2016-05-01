@@ -13,7 +13,7 @@ function msjLog() {
   local MOUT=$1
   local TIPO=$2
   echo "${MOUT}"
-  "$GRABITAC" "$0" "$MOUT" "$TIPO"
+  "$GRABITAC" "$0" "$MOUT" "$TIPO" &> /dev/zero
 }
 
 function NovedadesPendientes() {
@@ -101,10 +101,6 @@ function Validar() {
 	return $TRUE
 }
 
-#verifico que haya archivos en ARRIDIR
-#TODO: variable hardcodeada
-SLEEPTIME=10
-
 #Validacion del entorno de ejecucion
 
 if [ ! -d $ARRIDIR ]; then
@@ -162,14 +158,9 @@ function main()
 		if [ $valResultado -eq $FALSE ]
 		then
 			msjLog  "$MENSAJEERROR" "ERR"
-			"$MOVER" "$ARRIDIR/$archivo" "$NOKDIR" $0
+			"$MOVER" "$ARRIDIR/$archivo" "$NOKDIR" $0 &> /dev/zero
 		else
-			"$MOVER" "$ARRIDIR/$archivo" "$OKDIR" $0
-			#MoverArchivos($archivo) => OK
-			#escribir log
-			#MSJ="OK"
-  			#msjLog "${MSJ}" "INFO"
-			echo "OK"
+			"$MOVER" "$ARRIDIR/$archivo" "$OKDIR" $0 &> /dev/zero
 		fi
 	done
 
