@@ -1,0 +1,86 @@
+Inicio de ProcesarOfertas
+Cantidad de archivos a procesar: 4
+
+Archivo a procesar: '3500_20160415.csv'
+
+GRABAR oferta valida
+GrabarOfertaValida   > .txt
+Codigo Concecionario : 3500
+Fecha Archivo        : 2016/04/15
+Contrato Fusionado   : 7886009
+Grupo                : 7886
+Nro de Orden         : 009
+Importe Ofertado     : 24500
+Nombre del Suscriptor: MARTIN,AGUSTIN 
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:55
+
+GRABAR oferta valida
+GrabarOfertaValida   > .txt
+Codigo Concecionario : 3500
+Fecha Archivo        : 2016/04/15
+Contrato Fusionado   : 7907081
+Grupo                : 7907
+Nro de Orden         : 081
+Importe Ofertado     : 5000
+Nombre del Suscriptor: GRIFFA,DIEGO 
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:55
+
+RECHAZAR registro
+RechazarRegistro     > 3500_20160415.csv.rech
+Fuente               : 3500_20160415.csv
+Motivo Rechazo       : Grupo no encontrado. Contrato no encontrado. 
+Registro de Oferta   : "0000999;24500"
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:55
+
+RECHAZAR registro
+RechazarRegistro     > 3500_20160415.csv.rech
+Fuente               : 3500_20160415.csv
+Motivo Rechazo       : Contrato no encontrado. 
+Registro de Oferta   : "7886016;24500"
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:55
+
+RECHAZAR registro
+RechazarRegistro     > 3500_20160415.csv.rech
+Fuente               : 3500_20160415.csv
+Motivo Rechazo       : No alzanza el monto mínimo. 
+Registro de Oferta   : "7913029;100"
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:55
+
+RECHAZAR registro
+RechazarRegistro     > 3500_20160415.csv.rech
+Fuente               : 3500_20160415.csv
+Motivo Rechazo       : Supera el monto máximo. 
+Registro de Oferta   : "7925042;100000000"
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:56
+
+RECHAZAR registro
+RechazarRegistro     > 3500_20160415.csv.rech
+Fuente               : 3500_20160415.csv
+Motivo Rechazo       : Grupo CERRADO. 
+Registro de Oferta   : "8397136;40000"
+Usuario              : jotape
+Fecha                : 16/05/01 02:00:56
+
+Cantidad de registros leídos:	7
+Cantidad de ofertas válidas:	2
+Cantidad de ofertas rechazadas:	5
+El archivo "3500_20160415.csv" ha sido movido al directorio "/home/jotape/Documentos/Estudio/FIUBA/Asignaturas/75.08 Sistemas Operativos/TP/sisop2016/procesados/procesadas/"
+
+El archivo "3500_20160416.csv" ha sido movido al directorio "/home/jotape/Documentos/Estudio/FIUBA/Asignaturas/75.08 Sistemas Operativos/TP/sisop2016/rechazados/"
+Archivo rechazado:  '3500_20160416.csv' (está DUPLICADO)
+
+El archivo "3500_20160417.csv" ha sido movido al directorio "/home/jotape/Documentos/Estudio/FIUBA/Asignaturas/75.08 Sistemas Operativos/TP/sisop2016/rechazados/"
+Archivo rechazado:  '3500_20160417.csv' (estructura no correspondida con el formato esperado)
+
+El archivo "3500_20160418.csv" ha sido movido al directorio "/home/jotape/Documentos/Estudio/FIUBA/Asignaturas/75.08 Sistemas Operativos/TP/sisop2016/rechazados/"
+Archivo rechazado:  '3500_20160418.csv' (estructura no correspondida con el formato esperado)
+
+Cantidad de archivos procesados: 1
+Cantidad de archivos rechazados: 3
+Fin de ProcesarOfertas
