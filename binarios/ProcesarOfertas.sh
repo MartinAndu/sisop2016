@@ -31,7 +31,11 @@ function EsArchivoDuplicado(){
 function EsEstructuraInvalida(){
   local archivo=$1
   if EsArchivoDeTextoPlano $archivo ; then
-    local esCampoValido=$(head -n 1 "$OKDIR/$archivo" | grep -c "^[0-9]\{7\}\;[0-9]\+$")
+    read -r primeraLinea < "$OKDIR/$archivo"
+    echo primeraLinea: $primeraLinea
+    local esCampoValido=$(echo -e $primeraLinea | grep -c "^[0-9]\{7\};[0-9]\+\([,][0-9]\+\)\?$")
+    echo esCampoValido: $esCampoValido
+
     if [ $esCampoValido -eq 1 ] ; then
       return 1 #FALSE
     else
@@ -51,7 +55,9 @@ function RechazarArchivo(){
 function EsOfertaValida(){
   motivoRechazo='' #La uso como variable global
   local contratoFusionado=$1
+  echo contratoFusionado: $contratoFusionado
   local importeOferta=$2
+  echo importeOFerta: $importeOferta
 
   local grupo=$(echo $contratoFusionado | sed 's-^\([0-9]\{4\}\)[0-9]\{3\}$-\1-g')
   #echo "NroGrupo: $grupo" #NOVA
@@ -64,18 +70,17 @@ function EsOfertaValida(){
     local lineaGruposCsv=$(grep "^$grupo;" "$MAEDIR/Grupos.csv")
     #echo "lineaGrupo: $lineaGruposCsv"
     local estadoGrupo=$(echo "$lineaGruposCsv" | cut -f2 -d';')
-    #echo "estadoGrupo: $estadoGrupo" #NOVA
+    echo "estadoGrupo: $estadoGrupo" #NOVA
     local valorCuotaPura=$(echo "$lineaGruposCsv" | cut -f4 -d';' | sed 's-,-\.-g')
-    #echo "valorCuotaPura: $valorCuotaPura" #NOVA
+    echo "valorCuotaPura: $valorCuotaPura" #NOVA
     local cantidadCuotasPendientes=$(echo "$lineaGruposCsv" | cut -f5 -d';')
-    #echo "cantidadCuotasPendientes: $cantidadCuotasPendientes" #NOVA
+    echo "cantidadCuotasPendientes: $cantidadCuotasPendientes" #NOVA
     local cantidadCuotasLicitacion=$(echo "$lineaGruposCsv" | cut -f6 -d';')
-    #echo "cantidadCuotasLicitacion: $cantidadCuotasLicitacion" #NOVA
+    echo "cantidadCuotasLicitacion: $cantidadCuotasLicitacion" #NOVA
     local montoMinimo=$(echo "$valorCuotaPura*$cantidadCuotasLicitacion" | bc)
-    #echo "montoMinimo: $montoMinimo" #NOVA
+    echo "montoMinimo: $montoMinimo" #NOVA
     local montoMaximo=$(echo "$valorCuotaPura*$cantidadCuotasPendientes" | bc)
-    #echo "montoMaximo: $montoMaximo" #NOVA
-    #echo "importeOferta: $importeOferta" #NOVA
+    echo "montoMaximo: $montoMaximo" #NOVA
 
     if [ $(echo "$importeOferta>=$montoMinimo" | bc) -ne 1 ] ; then # 1 TRUE
       motivoRechazo=$motivoRechazo'No alzanza el monto mínimo. '
@@ -144,29 +149,13 @@ function GrabarOfertaValida(){
   local usuario=$(whoami)
   local fecha=$(date +"%y/%m/%d %H:%M:%S")
 
-  local fechaProximoActoAdjudicacion=$($BINDIR/ProximaFechaAdj.sh)
-
-  #TODO: Nose si hay que validar fechas
-  # local validacionFecha=$(date -d "$separacionFecha" +%s)
-	# local fechaActual=$(date +%s)
-  #
-	# if [ $validacionFecha -le $fechaActual ] ; then
-	# 	if [ $validacionFecha -gt $fechaUltimoActoAdjudicacion ] ; then
-	# 		MENSAJEERROR=""
-	# 	else
-	# 		MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es menor que la fecha del ultimo acto de adjudicacion (`date -d"@$fechaUltimoActoAdjudicacion" +%d/%m/%Y`)."
-	# 		return $FALSE
-	# 	fi
-	# else
-	# 	MENSAJEERROR="La fecha `date -d"@$validacionFecha" +%d/%m/%Y` es mayor que la fecha del dia actual.(`date  +%d/%m/%Y`)"
-	# 	return $FALSE
-	# fi
+  local fechaProximoActoAdjudicacion=$("$BINDIR/ProximaFechaAdj.sh")
 
   fechaProximoActoAdjudicacion=$(date -d"@$fechaProximoActoAdjudicacion" +%Y%m%d)
   echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOferta;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaProximoActoAdjudicacion"".txt"
 
   #NOVA
-  echo "GrabarOfertaValida   > $fechaAdjudicacion"".txt"
+  echo "GrabarOfertaValida   > $fechaProximoActoAdjudicacion"".txt"
   echo "Codigo Concecionario : $codConcecionario"
   echo "Fecha Archivo        : $fechaArchivo"
   echo "Contrato Fusionado   : $contratoFusionado"
@@ -184,11 +173,11 @@ function Procesar(){
   local cantidadRegistrosLeidos=0
   local cantidadRegistrosValidos=0
   local cantidadRegistrosRechazados=0
-  local IFS=";"
 
   while IFS='' read -r line || [[ -n "$line" ]]; do
-    contratoFusionado=$(echo "$line" | cut -f1 -d';')
-    importeOferta=$(echo "$line" | cut -f2 -d';')
+    local contratoFusionado=$(echo "$line" | cut -f1 -d';')
+    local importeOfertaTmp=$(echo "$line" | cut -f2 -d';')
+    local importeOferta=$(echo "$importeOfertaTmp" | cut -f1 -d',').$(echo "$importeOfertaTmp" | cut -f2 -d',')
     echo ''
     cantidadRegistrosLeidos=$(($cantidadRegistrosLeidos+1))
     if EsOfertaValida $contratoFusionado $importeOferta ; then
@@ -233,10 +222,10 @@ for archivo in $archivosOrdenados ; do
   #echo $archivo #NO VA
   if EsArchivoDuplicado $archivo ; then
     RechazarArchivo $archivo
-    msjLog "Archivo rechazado:  '$archivo' (está DUPLICADO)" "INFO"
+    msjLog "Archivo rechazado:  '$archivo' (está DUPLICADO)" "WAR"
   elif EsEstructuraInvalida $archivo ; then
     RechazarArchivo $archivo
-    msjLog "Archivo rechazado:  '$archivo' (estructura no correspondida con el formato esperado)" "INFO"
+    msjLog "Archivo rechazado:  '$archivo' (estructura no correspondida con el formato esperado)" "WAR"
   else
     msjLog "Archivo a procesar: '$archivo'" "INFO"
     Procesar $archivo
