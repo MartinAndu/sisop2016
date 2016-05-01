@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GRUPO=~/grupo02
-CONFG="$GRUPO/$CONFDIR/CIPAL.cnf"
+GRUPO=`pwd`
+CONFG="$GRUPO/config/CIPAL.cnf"
 GRABITAC="$GRUPO/binarios/GrabarBitacora.sh"
 
 
@@ -10,29 +10,29 @@ escribirConfig () {
 	WHO=${USER}
 
 	#GRUPO
-	echo "GRUPO=$GRUPO=$WHO=$WHEN" >> $CONFG
+	echo "GRUPO=$GRUPO=$WHO=$WHEN" >> "$CONFG"
 	#CONFDIR
-	echo "CONFDIR=$GRUPO/$CONFDIR=$WHO=$WHEN" >> $CONFG
+	echo "CONFDIR=$GRUPO/$CONFDIR=$WHO=$WHEN" >> "$CONFG"
 	#BINDIR
-	echo "BINDIR=$GRUPO/$BINDIR=$WHO=$WHEN" >> $CONFG
+	echo "BINDIR=$GRUPO/$BINDIR=$WHO=$WHEN" >> "$CONFG"
 	#MAEDIR
-	echo "MAEDIR=$GRUPO/$MAEDIR=$WHO=$WHEN" >> $CONFG
+	echo "MAEDIR=$GRUPO/$MAEDIR=$WHO=$WHEN" >> "$CONFG"
 	#ARRIDIR
-	echo "ARRIDIR=$GRUPO/$ARRIDIR=$WHO=$WHEN" >> $CONFG
+	echo "ARRIDIR=$GRUPO/$ARRIDIR=$WHO=$WHEN" >> "$CONFG"
 	#OKDIR
-	echo "OKDIR=$GRUPO/$OKDIR=$WHO=$WHEN" >> $CONFG
+	echo "OKDIR=$GRUPO/$OKDIR=$WHO=$WHEN" >> "$CONFG"
 	#PROCDIR
-	echo "PROCDIR=$GRUPO/$PROCDIR=$WHO=$WHEN" >> $CONFG
+	echo "PROCDIR=$GRUPO/$PROCDIR=$WHO=$WHEN" >> "$CONFG"
 	#INFODIR
-	echo "INFODIR=$GRUPO/$INFODIR=$WHO=$WHEN" >> $CONFG
+	echo "INFODIR=$GRUPO/$INFODIR=$WHO=$WHEN" >> "$CONFG"
 	#LOGDIR
-	echo "LOGDIR=$GRUPO/$LOGDIR=$WHO=$WHEN" >> $CONFG
+	echo "LOGDIR=$GRUPO/$LOGDIR=$WHO=$WHEN" >> "$CONFG"
 	#NOKDIR
-	echo "NOKDIR=$GRUPO/$NOKDIR=$WHO=$WHEN" >> $CONFG
+	echo "NOKDIR=$GRUPO/$NOKDIR=$WHO=$WHEN" >> "$CONFG"
 	#LOGSIZE
-	echo "LOGSIZE=$GRUPO/$LOGSIZE=$WHO=$WHEN" >> $CONFG
+	echo "LOGSIZE=$GRUPO/$LOGSIZE=$WHO=$WHEN" >> "$CONFG"
 	#SLEEPTIME
-	echo "SLEEPTIME=$GRUPO/$SLEEPTIME=$WHO=$WHEN" >> $CONFG
+	echo "SLEEPTIME=$GRUPO/$SLEEPTIME=$WHO=$WHEN" >> "$CONFG"
 
 	echo "Archivo de configuracion creado"
 }
@@ -45,16 +45,16 @@ moverArchivos (){
 
 	for archivoEjecutables in ${totalArchivos[*]}
 	do
-		cp $(pwd)/binarios/$archivoEjecutables $GRUPO/$BINDIR
+		cp "$(pwd)/binarios/$archivoEjecutables" "$GRUPO/$BINDIR"
 	done 
 
 	echo "Copiando archivos Maestros"
 
-	totalArchivos=`ls $(pwd)/maestros`
+	totalArchivos=`ls "$(pwd)/maestros"`
 
 	for archivoMaestros in ${totalArchivos[*]}
 	do
-		cp $(pwd)/maestros/$archivoMaestros $GRUPO/$MAEDIR
+		cp "$(pwd)/maestros/$archivoMaestros" "$GRUPO/$MAEDIR"
 	done 
 
 }
@@ -88,7 +88,7 @@ instalacion (){
 	for index in ${variables[*]}
 	do
 		echo "Creando $index"
-		mkdir -p $GRUPO/$index
+		mkdir -p "$GRUPO/$index"
 	done
 
 	#Mueve los ejecutables y los archivos maestros

@@ -30,8 +30,8 @@ function NovedadesPendientes() {
 		msjLog "$mensaje" "INFO"
 	else
 		#llamo a ProcesarOfertas
-		#TODO falta ponerle el pid en el mensaje y lanzar proceso
-		mensaje="ProcesarOfertas corriendo bajo el no.: "
+		PID=$(getPid "RecibirOfertas")
+		mensaje="ProcesarOfertas corriendo bajo el no.: $PID"
 		msjLog $mensaje "INFO"
 	fi
 }
