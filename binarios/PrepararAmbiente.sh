@@ -12,8 +12,8 @@ MOVER="$GRUPO/binarios/mover.sh"
 
 # Desde el archivo de configuración tomo todas las variables
 function setearVariablesAmbiente() {
-  GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
-  BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
+	  GRUPO=$(grep '^GRUPO' $CONFG | cut -d '=' -f 2)
+	  BINDIR=$(grep '^BINDIR' $CONFG | cut -d '=' -f 2)
     MAEDIR=$(grep '^MAEDIR' $CONFG | cut -d '=' -f 2)
     ARRIDIR=$(grep '^ARRIDIR' $CONFG | cut -d '=' -f 2)
     OKDIR=$(grep '^OKDIR' $CONFG | cut -d '=' -f 2)
@@ -59,7 +59,7 @@ function verificarAmbienteInicializado() {
   done
   if [ "$i" -gt 0 ]; then
     MSJ="Ambiente ya inicializado, para reiniciar termine la sesión e ingrese nuevamente"
-    $GRABITAC "$0" "$MSJ" "ERR"
+    $GRABITAC "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
     return 1
   fi
   return 0
@@ -75,7 +75,7 @@ function verificarTodo() {
 
 MSJ="Prueba Log Sorteo 2016"
 echo "${MSJ}"
-$GRABITAC "$0" "${MSJ}" "INFO"
+$GRABITAC "$BINDIR/PrepararAmbiente.sh" "${MSJ}" "INFO"
 
 
 #Inicio del script

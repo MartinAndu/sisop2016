@@ -82,7 +82,7 @@ instalacion (){
 
 
   	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${pROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR})
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR})
 	echo "Creando Estructuras de directorio.." 
 
 	for index in ${variables[*]}
