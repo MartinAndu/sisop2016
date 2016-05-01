@@ -23,14 +23,9 @@ bytes=1024
 CMDO2=$(echo $CMDO | sed "s|^.*\/\(.*\).sh$|\1|g")
 
 #NOVA {
-# TODO: el PATH del FILE  no esta bien, esta harcodeado porque no existe la variable de ambiente aun
-#GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
-#LOGDIR="$GRUPO/bitacoras"
-LOGEXT='.log'
-FILE="${LOGDIR}"/"${CMDO2}"."${LOGEXT}"
-#NOVA }
+LOGDIR="$GRUPO/bitacoras"
+FILE="${LOGDIR}"/"${CMDO2}.log"
 
-#FILE=$(awk)${CMDO2}.log
 
 WHEN=`date +%T-%d-%m-%Y`
 WHO=${USER}
@@ -38,7 +33,6 @@ WHO=${USER}
 # Si el tamanio del archivo de log es mayor que $LOGSIZE, guardo las últimas $TRUNCO líneas
 
 LOGSIZE=100
-# TODO : el logsize se define en el prepararAmbiente, aca esta harcodeado para que ande
 
 tamaniomaximo=$((${LOGSIZE} * ${bytes}))	# Tamanio máximo en bytes
 if [ -f "$FILE" ];then
@@ -49,6 +43,5 @@ if [[ "${tamanioactual}" -ge "${tamaniomaximo}" ]]; then
   sed -i "1,$(($(wc -l $FILE|awk '{print $1}') - $TRUNCO)) d" "$FILE"
   echo -e $WHEN - $WHO - $CMDO2 - "INFO" - "Log Excedido" >> "$FILE"
 fi
-
 
 echo -e "$WHEN - $WHO - $CMDO2 - $TIPO - $MSJE" >> "$FILE"
