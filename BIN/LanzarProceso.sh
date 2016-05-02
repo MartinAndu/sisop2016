@@ -20,9 +20,9 @@ function verificarComandoInvocado(){
 }
 
 function verificarAmbiente(){
-	if [ $comandoAInvocar != "PrepararAmbiente" ]; then
+	if [ $comandoAInvocar != "PrepararAmbiente" ];then
 		ambienteInicializado
-		if [ $? == 1 ]; then
+		if [ $? == 1 ];then
 			local mensajeError="Ambiente no inicializado"
 			imprimirResultado "$mensajeError" "ERR"
 			exit 1
@@ -52,7 +52,7 @@ function msjLog() {
 	  local MENSAJE=$1
 	  local TIPO=$2
 	  # solo graba si se invoca por un comando que registre en su log
-	  if [ "$COMANDOGRABA" == "true" ]; then
+	  if [ $COMANDOGRABA = "true" ]; then
 	    $GRABITAC "$BINDIR/$comandoInvocador.sh" "$MENSAJE" "$TIPO"
 	  fi
 }
@@ -108,4 +108,3 @@ if [ $# == 1 ] && [ "$comandoAInvocar" != "RecibirOfertas" ];then
 	exit 1	
 fi
 arrancar
-
