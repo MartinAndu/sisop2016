@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRUPO=`pwd`
+GRUPO=~/grupo02
 CONFG="$GRUPO/config/CIPAL.cnf"
 GRABITAC="$GRUPO/binarios/GrabarBitacora.sh"
 
@@ -46,7 +46,7 @@ moverArchivos (){
 	for archivoEjecutables in ${totalArchivos[*]}
 	do
 		cp "$(pwd)/binarios/$archivoEjecutables" "$GRUPO/$BINDIR"
-	done 
+	done
 
 	echo "Copiando archivos Maestros"
 
@@ -62,6 +62,7 @@ moverArchivos (){
 
 definirDirectorio (){
 	echo "Creando archivos de directorio.."
+
 	BINDIR="binarios"
 	MAEDIR="maestros"
 	ARRIDIR="arribados"
@@ -77,12 +78,10 @@ instalacion (){
 
 	# Define nombre de directorios.
 	definirDirectorio
-	# Escribe el archivo de configuracion.
- 	escribirConfig
 
 
   	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR})
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR})
 	echo "Creando Estructuras de directorio.." 
 
 	for index in ${variables[*]}
@@ -90,6 +89,12 @@ instalacion (){
 		echo "Creando $index"
 		mkdir -p "$GRUPO/$index"
 	done
+
+
+	# Escribe el archivo de configuracion si no existe.
+	if [ ! -f "$CONFG" ]; then	
+ 		escribirConfig
+ 	fi
 
 	#Mueve los ejecutables y los archivos maestros
 	moverArchivos

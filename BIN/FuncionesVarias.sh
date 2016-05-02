@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function ambienteInicializado(){
+
 	if [ "${GRUPO}" == "" ]; then	
 		return 1
 	fi
@@ -40,7 +41,7 @@ function ambienteInicializado(){
 	if [ "${INFODIR}" == "" ]; then	
 		return 1
 	fi
-
+	echo "Sds"
 	return 0
 }
 
