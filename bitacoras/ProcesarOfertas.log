@@ -1,12 +1,58 @@
-02:57:58-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
-02:57:58-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 4
-02:57:58-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3500_20160415.csv'
-02:57:59-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	8
-02:57:59-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
-02:57:59-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	6
-02:57:59-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo rechazado:  '3500_20160416.csv' (está DUPLICADO)
-02:57:59-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo rechazado:  '3500_20160417.csv' (estructura no correspondida con el formato esperado)
-02:58:00-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo rechazado:  '3500_20160418.csv' (estructura no correspondida con el formato esperado)
-02:58:00-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
-02:58:00-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 3
-02:58:00-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+15:45:02-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+15:45:02-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 1
+15:45:02-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+15:45:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+16:10:32-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+16:10:32-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 1
+16:10:32-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+16:10:33-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 1
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+16:11:56-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+16:13:10-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+16:13:10-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 1
+16:13:10-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+16:13:10-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+16:13:10-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:13:11-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+16:13:11-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
+16:13:11-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+16:13:11-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+16:14:03-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 1
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 1
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+16:14:04-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
+16:26:06-01-05-2016 - jotape - ProcesarOfertas - INFO - Inicio de ProcesarOfertas
+16:26:06-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos a procesar: 2
+16:26:06-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3500_20151225.csv'
+16:26:07-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	8
+16:26:07-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:26:07-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	6
+16:26:07-01-05-2016 - jotape - ProcesarOfertas - INFO - Archivo a procesar: '3303_20160420.csv'
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de registros leídos:	2
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas válidas:	2
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de ofertas rechazadas:	0
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos procesados: 2
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Cantidad de archivos rechazados: 0
+16:26:08-01-05-2016 - jotape - ProcesarOfertas - INFO - Fin de ProcesarOfertas
