@@ -160,7 +160,7 @@ function GrabarOfertaValida(){
   local fechaProximoActoAdjudicacion=$("$BINDIR/ProximaFechaAdj.sh")
 
   fechaProximoActoAdjudicacion=$(date -d"@$fechaProximoActoAdjudicacion" +%Y%m%d)
-  # echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOfertaTmp;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaProximoActoAdjudicacion"".txt"
+  echo "$codConcecionario;$fechaArchivo;$contratoFusionado;$grupo;$orden;$importeOfertaTmp;$nombreSuscriptor;$usuario;$fecha" >> "$PROCDIR/validas/$fechaProximoActoAdjudicacion"".txt"
 
   #NOVA
   # echo "GrabarOfertaValida   > $fechaProximoActoAdjudicacion"".txt"

@@ -74,7 +74,7 @@ function verificarInstalacion() {
   GRU="$MAEDIR/Grupos.csv"
   TEMA="$MAEDIR/temaL_padron.csv"
 
-  PERL="determinarGanadores.pl"
+  PERL="DeterminarGanadores.pl"
   SORTEO="GenerarSorteo.sh"
   BIT="GrabarBitacora.sh"
   MOV="MoverArchivo.sh"
