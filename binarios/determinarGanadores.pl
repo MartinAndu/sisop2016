@@ -454,6 +454,9 @@ sub ganadores_por_sorteo {
 			imprimir_resultado "El grupo $grupo no tiene participantes del sorteo";
 		}
 	}
+	if ($grabar) {
+		close SALIDA;
+	}
 }
 
 sub ganadores_por_licitacion {
@@ -474,6 +477,9 @@ sub ganadores_por_licitacion {
 		else {
 			imprimir_resultado "El grupo $grupo no tiene ganadores por licitacion";
 		}
+	}
+	if ($grabar) {
+		close SALIDA;
 	}
 }
 
