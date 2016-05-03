@@ -97,3 +97,16 @@
 		- g: ejecuta el modo interactivo, pero además graba los resultados de las consultas en un archivo
 
 ################################################################################################################################################
+							DetenerProceso	
+################################################################################################################################################
+        
+	DetenerProceso sirve para detener un proceso que está corriendo. El funcionamiento es el siguiente: chequea que el comando a detener
+	ingresado por el usuario exista en la carpeta binarios, luego verifica que el ambiente este inicializado y finalmente verifica que el
+	programa a detener introducido realmente esté corriendo. Si todas esas hipótesis se verifican se detiene el proceso. Caso contrario
+	el comando sale con un mensaje de error.
+
+		$ ./DetenerProceso.sh "comando"
+	
+	"comando" representa el comando que se desea ejecutar, sin extensión.
+
+################################################################################################################################################
