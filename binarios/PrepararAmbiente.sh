@@ -98,7 +98,6 @@ function verificarArchivos() {
   faltantesBIN=()
   for ARCH in "${archivos}"
   do
-
     # ¿Existe el archivo?
     if [ ! -f "$ARCH" ]; then
       completo=1
@@ -183,15 +182,15 @@ function mostrarYGrabar() {
   for VAR in "${variables[@]}"
   do
     MSJ="Directorio de ""${mensajes[${i}]}":" $VAR"
-    $GRABITAC "$0" "$MSJ" "INFO"
+    "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "INFO"
     # listar archivos si es BINDIR, MAEDIR, LOGDIR
     if [ "$VAR" = "$BINDIR" ] || [ "$VAR" = "$MAEDIR" ] || [ "$VAR" = "$LOGDIR" ] ; then
       LIST=$(ls "$VAR")
-      $GRABITAC "$0" "$LIST" "INFO"
+      $GRABITAC "$BINDIR/PrepararAmbiente.sh" "$LIST" "INFO"
     fi
     ((i+=1))
   done  
-  $GRABITAC "$0" "Estado del Sistema: INICIALIZADO" "INFO"
+  "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "Estado del Sistema: INICIALIZADO" "INFO"
 }
 
 function deseaLanzar() {
@@ -211,7 +210,6 @@ function deseaLanzar() {
       ;;
   esac
 }
-
 
 #Inicio del script
 
