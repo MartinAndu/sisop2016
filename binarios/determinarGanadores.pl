@@ -439,6 +439,12 @@ sub resultado_general {
 sub ganadores_por_sorteo {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	my @grupos = pedir_grupos;
+	if ($grabar) {
+		$filename_ganadores_sorteo = $configuracion{INFODIR} . "/sorteo" . $sorteo_id_seleccionado 
+				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
+		open (SALIDA, ">$filename_ganadores_sorteo")
+			or manejar_error "Error: no se puede escribir el archivo de ganadores por sorteo";
+	}
 	foreach my $grupo (@grupos) {
 		my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado) {
@@ -454,6 +460,12 @@ sub ganadores_por_licitacion {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	cargar_ofertas_licitacion unless %ofertas_licitacion_por_grupo;
 	my @grupos = pedir_grupos;
+	if ($grabar) {
+		$filename_ganadores_licitacion = $configuracion{INFODIR} . "/licitacion" . $sorteo_id_seleccionado 
+				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
+		open (SALIDA, ">$filename_ganadores_licitacion")
+			or manejar_error "Error: no se puede escribir el archivo de ganadores por licitacion";
+	}
 	foreach my $grupo (@grupos) {
 		my ($orden, $nombre, $nro_sorteado, $importe) = ganador_licitacion_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado and $importe) {
