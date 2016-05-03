@@ -286,7 +286,7 @@ sub pedir_un_grupo {
 }
 
 sub todos_los_grupos {
-	return keys %maestro_grupos;
+	return sort((keys %maestro_grupos));
 }
 
 sub validar_y_filtrar_lista_grupos {
@@ -459,6 +459,10 @@ sub ganadores_por_sorteo {
 		my $grupo_hasta = $grupos[$#grupos];
 	}
 	foreach my $grupo (@grupos) {
+		if (!$maestro_grupos{$grupo}) {
+			imprimir_resultado "El grupo $grupo esta cerrado";
+			next;
+		}
 		my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado) {
 			imprimir_resultado "Ganador por sorteo del grupo $grupo: Nro de Orden $orden, $nombre (Nro. de sorteo $nro_sorteado)";
@@ -483,6 +487,10 @@ sub ganadores_por_licitacion {
 			or manejar_error "Error: no se puede escribir el archivo de ganadores por licitacion";
 	}
 	foreach my $grupo (@grupos) {
+		if (!$maestro_grupos{$grupo}) {
+			imprimir_resultado "El grupo $grupo esta cerrado";
+			next;
+		}
 		my ($orden, $nombre, $nro_sorteado, $importe) = ganador_licitacion_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado and $importe) {
 			imprimir_resultado "Ganador por licitacion del grupo $grupo: Nro de Orden $orden, $nombre con \$$importe (Nro. de sorteo $nro_sorteado)";
