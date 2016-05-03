@@ -51,7 +51,7 @@ function inicializarAmbiente() {
 # Devuelve 1 si ya fue inicializado, 0 sino
 function verificarAmbienteInicializado() {
   i=0 
-  variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR})
+  variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${INFODIR} ${LOGDIR} ${NOKDIR})
   for VAR in "${variables[@]}"
   do
     if [[ ! -z "$VAR" ]]; then # si la variable no está vacía es porque fue inicializado
@@ -182,11 +182,12 @@ function mostrarYGrabar() {
   for VAR in "${variables[@]}"
   do
     MSJ="Directorio de ""${mensajes[${i}]}":" $VAR"
+    echo $MSJ
     "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "INFO"
     # listar archivos si es BINDIR, MAEDIR, LOGDIR
     if [ "$VAR" = "$BINDIR" ] || [ "$VAR" = "$MAEDIR" ] || [ "$VAR" = "$LOGDIR" ] ; then
       LIST=$(ls "$VAR")
-      $GRABITAC "$BINDIR/PrepararAmbiente.sh" "$LIST" "INFO"
+      "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$LIST" "INFO"
     fi
     ((i+=1))
   done  
@@ -219,7 +220,7 @@ function deseaLanzar() {
 
 verificarAmbienteInicializado
 ambienteIni=$?
-if [ ambienteIni = 1 ]; then
+if [ $ambienteIni == 1 ]; then
   MSJ="Ambiente ya inicializado, para reiniciar termine la sesión e ingrese nuevamente"
   echo $MSJ
   "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
@@ -227,10 +228,9 @@ if [ ambienteIni = 1 ]; then
 fi
 setearVariablesAmbiente
 
-
 verificarInstalacion
 instCompleta=$?
-if [ instCompleta = 1 ]; then
+if [ $instCompleta == 1 ]; then
   echo "La instalación no está completa, existen los siguientes archivos faltantes $(printf '%s\n' "${faltantes[@]}")" 
   echo "Se deberá volver a realizar la instalación"
   return 1
@@ -239,11 +239,10 @@ fi
 # Verifico permisos
 verificarPermisos
 permisos=$?
-if [ permisos = 1 ]; then
+if [ $permisos == 1 ]; then
   echo "Los permisos estan mal asignados"
   return 1
 fi 
-
 
 inicializarAmbiente
 
