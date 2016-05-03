@@ -98,9 +98,9 @@ instalacion (){
 
 	# Escribe el archivo de configuracion si no existe.
 	
-	# if [ ! -f "$CONFG" ]; then	
+	if [ ! -f "$CONFG" ]; then	
  		escribirConfig
- 	# fi
+ 	fi
 
 	#Mueve los ejecutables y los archivos maestros
 	moverArchivos
