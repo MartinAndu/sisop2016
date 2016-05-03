@@ -30,9 +30,12 @@ escribirConfig () {
 	#NOKDIR
 	echo "NOKDIR=$GRUPO/$NOKDIR=$WHO=$WHEN" >> "$CONFG"
 	#LOGSIZE
-	echo "LOGSIZE=$GRUPO/$LOGSIZE=$WHO=$WHEN" >> "$CONFG"
+	echo "LOGSIZE=$LOGSIZE=$WHO=$WHEN" >> "$CONFG" 
+
 	#SLEEPTIME
-	echo "SLEEPTIME=$GRUPO/$SLEEPTIME=$WHO=$WHEN" >> "$CONFG"
+	echo "SLEEPTIME=$SLEEPTIME=$WHO=$WHEN" >> "$CONFG"
+	#LOCKDIR Establece el directorio raiz grupo02
+	echo "LOCKDIR=$GRUPO=$WHO=$WHEN" >> "$CONFG"
 
 	echo "Archivo de configuracion creado"
 }
@@ -72,16 +75,18 @@ definirDirectorio (){
 	LOGDIR="bitacoras"
 	NOKDIR="rechazados"
 	CONFDIR="config"
+	SLEEPTIME=100
+	LOGSIZE=100
+
 } 
 
 instalacion (){
-
 	# Define nombre de directorios.
 	definirDirectorio
 
 
   	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/proc ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR})
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR})
 	echo "Creando Estructuras de directorio.." 
 
 	for index in ${variables[*]}
@@ -92,9 +97,10 @@ instalacion (){
 
 
 	# Escribe el archivo de configuracion si no existe.
-	if [ ! -f "$CONFG" ]; then	
+	
+	# if [ ! -f "$CONFG" ]; then	
  		escribirConfig
- 	fi
+ 	# fi
 
 	#Mueve los ejecutables y los archivos maestros
 	moverArchivos

@@ -1,15 +1,15 @@
 #!/bin/bash
 
 #Prepara Ambiente
-CONFDIR="config"
-CONFG=~/grupo02/$CONFDIR/CIPAL.cnf
+CONFDIR=~/grupo02/config
+CONFG=$CONFDIR/CIPAL.cnf
 GRABITAC="GrabarBitacora.sh"
 MOVER="MoverArchivo.sh"
 LANZAR="LanzarProceso.sh"
 
 # Desde el archivo de configuración tomo todas las variables
 function setearVariablesAmbiente() {
-	  GRUPO=$(grep '^GRUPO' "$CONFG" | cut -d '=' -f 2)
+	GRUPO=$(grep '^GRUPO' "$CONFG" | cut -d '=' -f 2)
     BINDIR=$(grep '^BINDIR' "$CONFG" | cut -d '=' -f 2)
     MAEDIR=$(grep '^MAEDIR' "$CONFG" | cut -d '=' -f 2)
     ARRIDIR=$(grep '^ARRIDIR' "$CONFG" | cut -d '=' -f 2)
@@ -20,6 +20,7 @@ function setearVariablesAmbiente() {
     NOKDIR=$(grep '^NOKDIR' "$CONFG" | cut -d '=' -f 2)
     LOGSIZE=$(grep '^LOGSIZE' "$CONFG" | cut -d '=' -f 2)
     SLEEPTIME=$(grep '^SLEEPTIME' "$CONFG" | cut -d '=' -f 2)
+    LOCKDIR=$(grep '^LOCKDIR' "$CONFG" | cut -d '=' -f 2)
 }
 
 
@@ -39,6 +40,7 @@ function inicializarAmbiente() {
   export LOGDIR
   export NOKDIR
   export LOGSIZE
+  export LOCKDIR
   export SLEEPTIME
   export CONFDIR
 }
