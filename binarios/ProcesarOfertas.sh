@@ -1,5 +1,8 @@
 #!/bin/bash
 
+GRABITAC="$BINDIR/GrabarBitacora.sh"
+MOVER="$BINDIR/MoverArchivo.sh"
+
 function msjLog() {
   local MSJOUT=$1
   local TIPO=$2

@@ -71,7 +71,7 @@ function verificarInstalacion() {
   # Scripts y maestros a verificar
   CONS="$MAEDIR/concesionarios.csv"
   FECHADJ="$MAEDIR/FechasAdj.csv"
-  GRU="$MAEDIR/grupos.csv"
+  GRU="$MAEDIR/Grupos.csv"
   TEMA="$MAEDIR/temaL_padron.csv"
 
   PERL="determinarGanadores.pl"
