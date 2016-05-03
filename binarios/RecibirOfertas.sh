@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source FuncionesVarias.sh
+
 IFS='
 '
 TRUE=0
@@ -12,7 +14,6 @@ MENSAJEERROR=""
 function msjLog() {
   local MOUT=$1
   local TIPO=$2
-  echo "${MOUT}"
   "$GRABITAC" "$0" "$MOUT" "$TIPO" &> /dev/zero
 }
 
@@ -30,9 +31,14 @@ function NovedadesPendientes() {
 		msjLog "$mensaje" "INFO"
 	else
 		#llamo a ProcesarOfertas
-		PID=$(getPid "RecibirOfertas")
-		mensaje="ProcesarOfertas corriendo bajo el no.: $PID"
-		msjLog $mensaje "INFO"
+		"$BINDIR/LanzarProceso.sh" "$BINDIR/ProcesarOfertas" "RecibirOfertas"
+		if [ $? -ne 0 ]; then
+			msjLog "La ejecucion de ProcesarOfertas ha fallado" "ERR"
+		else
+			PID=$(getPid "RecibirOfertas")
+			mensaje="ProcesarOfertas corriendo bajo el no.: $PID"
+			msjLog $mensaje "INFO"
+		fi
 	fi
 }
 
