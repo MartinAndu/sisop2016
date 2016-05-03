@@ -19,6 +19,13 @@ sub validar_ambiente {
 	}
 }
 
+sub parsear_opciones_linea_comandos {
+	foreach (@ARGV) {
+		$ayuda = 1 if $_ eq '-a';
+		$grabar = 1 if $_ eq '-g';
+	}
+}
+
 sub inicializar_proceso {
 	my @path_proceso = split('/', $0);
 	my $nombre_proceso = $path_proceso[$#path_proceso];
@@ -84,6 +91,7 @@ sub cargar_resultado_sorteo {
 	while (<SORTEO>) {
 		chomp($_);
 		my ($nro_orden, $nro_sorteado) = split(';', $_);
+		print $nro_sorteado;
 		$resultado_sorteo[$nro_sorteado] = $nro_orden;
 		$ordenes_sorteo[$nro_orden] = $nro_sorteado;
 	}
@@ -243,6 +251,10 @@ sub mostrar_opciones_seleccion_archivo_sorteo {
 	print "Su opcion (B por defecto): ";	
 }
 
+sub mostrar_ayuda {
+	print "ESTE TEXTO SE DEBE REEMPLAZAR POR LA AYUDA DEL COMANDO!!!\n";
+}
+
 sub min_y_max_lista {
 	my ($min, $max);
 	foreach $elemento (@_) {
@@ -275,7 +287,7 @@ sub pedir_un_grupo {
 }
 
 sub todos_los_grupos {
-	return keys %maestro_grupos;
+	return sort((keys %maestro_grupos));
 }
 
 sub validar_y_filtrar_lista_grupos {
@@ -439,7 +451,19 @@ sub resultado_general {
 sub ganadores_por_sorteo {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	my @grupos = pedir_grupos;
+	if ($grabar) {
+		$filename_ganadores_sorteo = $configuracion{INFODIR} . "/sorteo_" . $sorteo_id_seleccionado 
+				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
+		open (SALIDA, ">$filename_ganadores_sorteo")
+			or manejar_error "Error: no se puede escribir el archivo de ganadores por sorteo";
+		my $grupo_desde = $grupos[0];
+		my $grupo_hasta = $grupos[$#grupos];
+	}
 	foreach my $grupo (@grupos) {
+		if (!$maestro_grupos{$grupo}) {
+			imprimir_resultado "El grupo $grupo esta cerrado";
+			next;
+		}
 		my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado) {
 			imprimir_resultado "Ganador por sorteo del grupo $grupo: Nro de Orden $orden, $nombre (Nro. de sorteo $nro_sorteado)";
@@ -448,13 +472,26 @@ sub ganadores_por_sorteo {
 			imprimir_resultado "El grupo $grupo no tiene participantes del sorteo";
 		}
 	}
+	if ($grabar) {
+		close SALIDA;
+	}
 }
 
 sub ganadores_por_licitacion {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	cargar_ofertas_licitacion unless %ofertas_licitacion_por_grupo;
 	my @grupos = pedir_grupos;
+	if ($grabar) {
+		$filename_ganadores_licitacion = $configuracion{INFODIR} . "/licitacion_" . $sorteo_id_seleccionado 
+				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
+		open (SALIDA, ">$filename_ganadores_licitacion")
+			or manejar_error "Error: no se puede escribir el archivo de ganadores por licitacion";
+	}
 	foreach my $grupo (@grupos) {
+		if (!$maestro_grupos{$grupo}) {
+			imprimir_resultado "El grupo $grupo esta cerrado";
+			next;
+		}
 		my ($orden, $nombre, $nro_sorteado, $importe) = ganador_licitacion_en_grupo($grupo);
 		if ($orden and $nombre and $nro_sorteado and $importe) {
 			imprimir_resultado "Ganador por licitacion del grupo $grupo: Nro de Orden $orden, $nombre con \$$importe (Nro. de sorteo $nro_sorteado)";
@@ -463,8 +500,20 @@ sub ganadores_por_licitacion {
 			imprimir_resultado "El grupo $grupo no tiene ganadores por licitacion";
 		}
 	}
+	if ($grabar) {
+		close SALIDA;
+	}
 }
 
+sub resultados_por_grupo {
+	
+}
+
+&parsear_opciones_linea_comandos;
+if ($ayuda) {
+	mostrar_ayuda;
+	exit(0);
+}
 &validar_ambiente;
 &inicializar_proceso; 
 &settear_archivo_sorteo_default;
@@ -478,7 +527,7 @@ while ($opcion ne 'X') {
 	if ($opcion eq 'A') {resultado_general}; 
 	if ($opcion eq 'B') {ganadores_por_sorteo};
 	if ($opcion eq 'C') {ganadores_por_licitacion};
-	if ($opcion eq 'D') {ganadores_por_sorteo};
+	if ($opcion eq 'D') {resultados_por_grupo};
 	if ($opcion eq 'S') {seleccionar_archivo_sorteo};
 }
 &finalizar_proceso;

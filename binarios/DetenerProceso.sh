@@ -47,7 +47,6 @@ function detener(){
 	verificarAmbiente
 	verificarProcesoCorriendo
 
-		echo "DETENIENDOOOOOOOOOO"
 	PID=$(getPid $comando)
 	if [ "$PID" != "" ]; then
 	    #log "INFO" "Deteniendo proceso con pid $PID .."

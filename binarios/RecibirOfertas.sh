@@ -19,7 +19,7 @@ function msjLog() {
 
 function NovedadesPendientes() {
 	cantidadArchivos=`ls -A $OKDIR | wc -l`
-	if [ $cantidadArchivos -ge 0 ] ; then
+	if [ $cantidadArchivos -eq 0 ] ; then
 		return
 	fi
 
@@ -31,7 +31,7 @@ function NovedadesPendientes() {
 		msjLog "$mensaje" "INFO"
 	else
 		#llamo a ProcesarOfertas
-		"$BINDIR/LanzarProceso.sh" "$BINDIR/ProcesarOfertas" "RecibirOfertas"
+		"$BINDIR/LanzarProceso.sh" "ProcesarOfertas" "RecibirOfertas"
 		if [ $? -ne 0 ]; then
 			msjLog "La ejecucion de ProcesarOfertas ha fallado" "ERR"
 		else
