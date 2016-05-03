@@ -91,6 +91,7 @@ sub cargar_resultado_sorteo {
 	while (<SORTEO>) {
 		chomp($_);
 		my ($nro_orden, $nro_sorteado) = split(';', $_);
+		print $nro_sorteado;
 		$resultado_sorteo[$nro_sorteado] = $nro_orden;
 		$ordenes_sorteo[$nro_orden] = $nro_sorteado;
 	}
