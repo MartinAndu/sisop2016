@@ -75,8 +75,8 @@ definirDirectorio (){
 	LOGDIR="bitacoras"
 	NOKDIR="rechazados"
 	CONFDIR="config"
-	SLEEPTIME=100
-	LOGSIZE=100
+	SLEEPTIME=10
+	LOGSIZE=10
 
 } 
 
