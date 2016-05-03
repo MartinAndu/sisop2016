@@ -19,6 +19,13 @@ sub validar_ambiente {
 	}
 }
 
+sub parsear_opciones_linea_comandos {
+	foreach (@ARGV) {
+		$ayuda = 1 if $_ eq '-a';
+		$grabar = 1 if $_ eq '-g';
+	}
+}
+
 sub inicializar_proceso {
 	my @path_proceso = split('/', $0);
 	my $nombre_proceso = $path_proceso[$#path_proceso];
@@ -243,6 +250,10 @@ sub mostrar_opciones_seleccion_archivo_sorteo {
 	print "Su opcion (B por defecto): ";	
 }
 
+sub mostrar_ayuda {
+	print "ESTE TEXTO SE DEBE REEMPLAZAR POR LA AYUDA DEL COMANDO!!!\n";
+}
+
 sub min_y_max_lista {
 	my ($min, $max);
 	foreach $elemento (@_) {
@@ -440,10 +451,12 @@ sub ganadores_por_sorteo {
 	cargar_resultado_sorteo unless @resultado_sorteo;
 	my @grupos = pedir_grupos;
 	if ($grabar) {
-		$filename_ganadores_sorteo = $configuracion{INFODIR} . "/sorteo" . $sorteo_id_seleccionado 
+		$filename_ganadores_sorteo = $configuracion{INFODIR} . "/sorteo_" . $sorteo_id_seleccionado 
 				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
 		open (SALIDA, ">$filename_ganadores_sorteo")
 			or manejar_error "Error: no se puede escribir el archivo de ganadores por sorteo";
+		my $grupo_desde = $grupos[0];
+		my $grupo_hasta = $grupos[$#grupos];
 	}
 	foreach my $grupo (@grupos) {
 		my ($orden, $nombre, $nro_sorteado) = ganador_sorteo_en_grupo($grupo);
@@ -464,7 +477,7 @@ sub ganadores_por_licitacion {
 	cargar_ofertas_licitacion unless %ofertas_licitacion_por_grupo;
 	my @grupos = pedir_grupos;
 	if ($grabar) {
-		$filename_ganadores_licitacion = $configuracion{INFODIR} . "/licitacion" . $sorteo_id_seleccionado 
+		$filename_ganadores_licitacion = $configuracion{INFODIR} . "/licitacion_" . $sorteo_id_seleccionado 
 				. "_Grd" . $grupos[0] . "-Grh" . $grupos[$#grupos] . "_" . $fecha_adjudicacion_seleccionada . ".txt";
 		open (SALIDA, ">$filename_ganadores_licitacion")
 			or manejar_error "Error: no se puede escribir el archivo de ganadores por licitacion";
@@ -483,6 +496,15 @@ sub ganadores_por_licitacion {
 	}
 }
 
+sub resultados_por_grupo {
+	
+}
+
+&parsear_opciones_linea_comandos;
+if ($ayuda) {
+	mostrar_ayuda;
+	exit(0);
+}
 &validar_ambiente;
 &inicializar_proceso; 
 &settear_archivo_sorteo_default;
@@ -496,7 +518,7 @@ while ($opcion ne 'X') {
 	if ($opcion eq 'A') {resultado_general}; 
 	if ($opcion eq 'B') {ganadores_por_sorteo};
 	if ($opcion eq 'C') {ganadores_por_licitacion};
-	if ($opcion eq 'D') {ganadores_por_sorteo};
+	if ($opcion eq 'D') {resultados_por_grupo};
 	if ($opcion eq 'S') {seleccionar_archivo_sorteo};
 }
 &finalizar_proceso;
