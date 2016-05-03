@@ -107,6 +107,21 @@
 
 		$ ./DetenerProceso.sh "comando"
 	
-	"comando" representa el comando que se desea ejecutar, sin extensión.
+	"comando" representa el comando que se desea detener, sin extensión.
+
+################################################################################################################################################
+							LanzarProceso	
+################################################################################################################################################
+        
+	LanzarProceso sirve para iniciar un proceso. El funcionamiento es el siguiente: chequea que el comando a iniciar
+	ingresado por el usuario exista en la carpeta binarios, luego verifica que el ambiente este inicializado, graba la información en el log
+	del sistema CIPAL y finalmente verifica que el programa a iniciar introducido no esté corriendo. Si todas esas hipótesis se verifican se
+	detiene el proceso. Caso contrario el comando sale con un mensaje de error.
+
+		$ ./LanzarProceso.sh "comando" ["comandoInvocador"]
+
+	"comando" es el comando que se desea ejecutar, si se especifica solo este parametro, los resultados se muestran por pantalla.
+	"comandoInvocador" si se especifica la salida la hace en el archivo de log, sin mostrar datos por pantalla. 
+	Ambos comandos se escriben sin extensión.
 
 ################################################################################################################################################
