@@ -103,9 +103,4 @@ if [ $# -lt 1 ];then
 	exit 1
 fi
 
-if [ $# == 1 ] && [ "$comandoAInvocar" != "RecibirOfertas" ];then
-	echo "Modo de arranque incorrecto, por favor intente de la siguiente forma: \"LanzarProceso.sh RecibirOfertas\""
-	exit 1	
-fi
 arrancar
-
