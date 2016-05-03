@@ -5,8 +5,8 @@
 	      	# Alfonso Oderigo, Diego		83969
 	      	# Andújar, Martín			95099
 		# Castro Pippo, Juan Manuel		93760
-		# Moriello,Khalil Alejandro		96525
-		# Savulsky,Sebastián Alejandro		93081
+		# Moriello, Khalil Alejandro		96525
+		# Savulsky, Sebastián Alejandro		93081
 		# Sueiro, Ignacio Andrés		96817
 
 ################################################################################################################################################
@@ -50,22 +50,22 @@
 
 	1- Insertar el dispositivo de almacenamiento con el contenido del sistema (pen-drive, cd, etc)
 
-	2- Ubicarse en el directorio donde se desea instalar el programa. 
+	2- Ubicarse en el directorio donde se desea ejecutar el instalador. 
 
 	3- Copiar el archivo cipal.tar.gz en dicho directorio.
 
 	4- Descomprimir el archivo cipal.tar.gz. haciendo Click Derecho -> ”Extraer aquí”.
 
-	5. Luego de esto, se habrá creado la carpeta “grupo02”, la cual es la base del programa.
-
-	6. Para instalar el programa, se deberá ir a la ruta de esta carpeta base mediante la consola y ejecutar el instalador. Para abrir una
+	5. Para instalar el programa, se deberá ir a la ruta de esta carpeta base mediante la consola y ejecutar el instalador. Para abrir una
 	terminal se deben presionar en simultáneo Ctrl + Alt + “T”. Una vez abierta la terminal, se ejecutarán los siguientes comandos:
 
 		$ cd [ruta_programa]
 		$ ./instalarCipal.sh
+
+	6. Luego de esto, se habrá creado la carpeta “grupo02” en el directorio "home" del usuario, la cual es la base del programa.
 	
 	7. Si el instalador finalizó correctamente, se podrá ver que se crearon varias carpetas. Dirigirse a la carpeta definida para los 
-	archivos ejecutables (por defecto /binarios):
+	archivos ejecutables (por defecto "home/usuario/grupo02/binarios"):
 
 	   	$ cd binarios
 
