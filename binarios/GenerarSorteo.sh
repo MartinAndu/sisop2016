@@ -5,6 +5,16 @@ IFS='
 TRUE=0
 FALSE=1
 
+if [ ! -d "$BINDIR" ]; then
+    echo "Variables de ambiente no inicializadas, se procede a salir de la ejecucion"
+exit
+fi
+
+if [ ! -f "$MAEDIR/FechasAdj.csv" ]; then
+    echo "FechasAdj.csv no encontrado, volver a ejecutar con dicho archivo"
+exit
+fi
+
 GRABITAC="$BINDIR/GrabarBitacora.sh"
 function msjLog() {
   local MSJOUT=$1
@@ -12,6 +22,7 @@ function msjLog() {
   echo -e "${MSJOUT}"
   "$GRABITAC" "$0" "${MSJOUT}" "$TIPO"
 }
+
 
 
 fechaUltimoActoAdjudicacion=$(cut "$MAEDIR/FechasAdj.csv" -d';' -f1)
@@ -32,7 +43,7 @@ fechaProxima=0
 
 
 idActual="1"
-
+touch $PROCDIR/sorteos
 for archivo in  `ls -A "$PROCDIR/sorteos"`
 do
     SorteoId=$(echo $archivo | cut -d'_' -f1)
@@ -48,7 +59,7 @@ touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"
 j=1
 for (( i=1;i<=168;i++ )) do 
 echo $RANDOM  $((j++))
-done|sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"| head -168
+done |sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"| head -168;
 msjLog "Fin de Sorteo" "INFO"
-
+exit
 
