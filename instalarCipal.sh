@@ -30,7 +30,7 @@ escribirConfig () {
 	#NOKDIR
 	echo "NOKDIR=$GRUPO/$NOKDIR=$WHO=$WHEN" >> "$CONFG"
 	#LOGSIZE
-	echo "LOGSIZE=$LOGSIZE=$WHO=$WHEN" >> "$CONFG" 
+	echo "LOGSIZE=$LOGSIZE=$WHO=$WHEN" >> "$CONFG"
 
 	#SLEEPTIME
 	echo "SLEEPTIME=$SLEEPTIME=$WHO=$WHEN" >> "$CONFG"
@@ -41,7 +41,7 @@ escribirConfig () {
 }
 
 moverArchivos (){
-	totalArchivos=`ls $(pwd)/binarios`
+	totalArchivos=`ls "$(pwd)/binarios"`
 
 	echo "Instalando programas"
 
@@ -58,7 +58,7 @@ moverArchivos (){
 	for archivoMaestros in ${totalArchivos[*]}
 	do
 		cp "$(pwd)/maestros/$archivoMaestros" "$GRUPO/$MAEDIR"
-	done 
+	done
 
 }
 
@@ -78,16 +78,16 @@ definirDirectorio (){
 	SLEEPTIME=10
 	LOGSIZE=10
 
-} 
+}
 
 instalacion (){
 	# Define nombre de directorios.
 	definirDirectorio
 
 
-  	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR})
-	echo "Creando Estructuras de directorio.." 
+  	echo -e "El sistema sera instalado en: " '\n' "$GRUPO"'\n''\n'
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR})
+	echo "Creando Estructuras de directorio.."
 
 	for index in ${variables[*]}
 	do
@@ -97,8 +97,8 @@ instalacion (){
 
 
 	# Escribe el archivo de configuracion si no existe.
-	
-	if [ ! -f "$CONFG" ]; then	
+
+	if [ ! -f "$CONFG" ]; then
  		escribirConfig
  	fi
 
