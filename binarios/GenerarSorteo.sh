@@ -15,6 +15,10 @@ if [ ! -f "$MAEDIR/FechasAdj.csv" ]; then
 exit
 fi
 
+if [ ! -d "$PROCDIR/sorteos" ]; then
+    mkdir -p $PROCDIR/sorteos
+fi
+
 GRABITAC="$BINDIR/GrabarBitacora.sh"
 function msjLog() {
   local MSJOUT=$1
@@ -55,7 +59,7 @@ done
 SorteoId=$idActual
 msjLog "Inicio de Sorteo" "INFO"
 fechaProxima=$(date -d "$fecha" +%Y%m%d)
-touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"
+
 j=1
 for (( i=1;i<=168;i++ )) do 
 echo $RANDOM  $((j++))
