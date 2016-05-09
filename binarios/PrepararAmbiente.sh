@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Funciones varias
-source FuncionesVarias.sh
 
 #Prepara Ambiente
 CONFDIR=~/grupo02/config
@@ -12,7 +10,7 @@ LANZAR="LanzarProceso.sh"
 
 # Desde el archivo de configuración tomo todas las variables
 function setearVariablesAmbiente() {
-	GRUPO=$(grep '^GRUPO' "$CONFG" | cut -d '=' -f 2)
+  	GRUPO=$(grep '^GRUPO' "$CONFG" | cut -d '=' -f 2)
     BINDIR=$(grep '^BINDIR' "$CONFG" | cut -d '=' -f 2)
     MAEDIR=$(grep '^MAEDIR' "$CONFG" | cut -d '=' -f 2)
     ARRIDIR=$(grep '^ARRIDIR' "$CONFG" | cut -d '=' -f 2)
@@ -63,73 +61,69 @@ function verificarAmbienteInicializado() {
 function verificarInstalacion() {
 
   # Scripts y maestros a verificar
-  CONS="$MAEDIR/concesionarios.csv"
-  FECHADJ="$MAEDIR/FechasAdj.csv"
-  GRU="$MAEDIR/Grupos.csv"
-  TEMA="$MAEDIR/temaL_padron.csv"
+  CONS="concesionarios.csv"
+  FECHADJ="FechasAdj.csv"
+  GRU="Grupos.csv"
+  TEMA="temaL_padron.csv"
 
+  MOV="MostrarBitacora.sh"
   PERL="DeterminarGanadores.pl"
   SORTEO="GenerarSorteo.sh"
   BIT="GrabarBitacora.sh"
   MOV="MoverArchivo.sh"
-  AMB="PrepararAmbiente.sh"
   OFERTA="ProcesarOfertas.sh"
   ADJ="ProximaFechaAdj.sh"
   OFERTA="RecibirOfertas.sh"
   ULTIMA="UltimaFechaAdj.sh"
   LANZ="LanzarProceso.sh"
-
+  DET="DetenerProceso.sh"
+  PROX="ProximaFechaAdj.sh"
+  VARIAS="FuncionesVarias.sh"
 
   archivos=("$CONS" "$FECHADJ" "$GRU" "$TEMA")
-  scripts=("$PERL" "$SORTEO" "$BIT" "$MOV" "$AMB" "$OFERTA" "$ADJ" "$OFERTA" "$ULTIMA" "$LANZ")
+  scripts=("$MOV" "$PERL" "$SORTEO" "$BIT" "$MOV" "$OFERTA" "$ADJ" "$OFERTA" "$ULTIMA" "$LANZ" "$DET" "$PROX" "$VARIAS")
   
   verificarArchivos
 }
 
 function verificarArchivos() {
-  completo=0
+  incompleto=0
   faltantesMAE=()
   faltantesBIN=()
-  for ARCH in "${archivos}"
+  rutamaestro=~/grupo02/maestros
+  rutabinario=~/grupo02/binarios
+
+  for ARCH in ${archivos[*]}
   do
     # ¿Existe el archivo?
-    if [ ! -f "$ARCH" ]; then
-      completo=1
+    if [ ! -f "$rutamaestro/$ARCH" ]; then
+      incompleto=1
       faltantesMAE+=("$ARCH")
       echo "Falta el archivo $ARCH"
     fi
   done
 
-  for SCRIPT in "${scripts}"
+  for SCRIPT in ${scripts[*]}
   do
 
     # ¿Existe el script?
-    if [ ! -f "$SCRIPT" ]; then
-      completo=1
+    if [ ! -f "$rutabinario/$SCRIPT" ]; then
+      incompleto=1
       faltantesBIN+=("$SCRIPT")
       echo "Falta el script $SCRIPT"
     fi
 
   done
 
-  if [ completo = 1 ]; then # Si el archivo esta incompleto
-    return 1
+  if [ $incompleto == 1 ]; then # Si el archivo esta incompleto
+    return 0
   fi
-  return 0
+  return 1
 
 }
 
 function verificarPermisos() {
   permisos=0
-  for ARCH in "${archivos[@]}"
-  do
-    chmod +r "$ARCH"
-    if [ "$?" = -1 ]; then
-      permisos=1
-      msj="El archivo \"${ARCH}\" no tiene los permisos necesarios"
-      $GRABITAC "$BINDIR/PrepararAmbiente.sh" "$msj" "ERR"
-    fi
-  done
 
   for SCRIPT in "${scripts[@]}"
   do
@@ -141,27 +135,34 @@ function verificarPermisos() {
     fi
   done
 
-  if [ permisos = 1 ]; then
-    return 1
+  if [ $permisos == 1 ]; then
+    # Los permisos no estan correctamente asignados
+    return 0
   fi
-  return 0
+  return 1
 }
 
 function repararInstalacion(){
   # Repara instalacion
 
-  posicionActual=`pwd`
+  directorioRaiz=~/grupo02
   
+  echo "Copiando scripts faltantes.."
   for I2 in ${faltantesBIN[*]}
   do
-    cp $posicionActual/BIN/$I2 $BINDIR  
+    if [ -f $directorioRaiz/BIN/$I2 ]; then
+      cp $directorioRaiz/BIN/$I2 $directorioRaiz/binarios/$I2
+    fi
   done
 
   posicionActual=`pwd`
 
+  echo "Copiando archivos faltantes.."
   for I3 in ${faltantesMAE[*]}
   do
-    cp $posicionActual/MAE/$I3 $MAEDIR  
+    if [ -f $directorioRaiz/MAE/$I3 ]; then 
+      cp $directorioRaiz/MAE/$I3 $directorioRaiz/maestros/$I3 
+    fi
   done
 
 }
@@ -213,6 +214,28 @@ function deseaLanzar() {
 # A partir del archivo de configuración
 # Verifico si las variables estan seteadas
 
+
+
+# Verifico y reparo instalacion
+
+verificarInstalacion
+instCompleta=$?
+if [ $instCompleta == 0 ]; then
+
+  repararInstalacion
+  verificarInstalacion
+  verificoReparacion=$?
+  if [ $verificoReparacion == 0 ]; then
+    echo "La instalación no se pudo reparar correctamente, se deberá volver a realizar la instalación"
+    return 1
+  fi
+fi
+
+# Funciones varias
+source FuncionesVarias.sh
+
+# Verifico que ambiente este seteado
+
 verificarAmbienteInicializado
 ambienteIni=$?
 if [ $ambienteIni == 0 ]; then
@@ -222,21 +245,13 @@ if [ $ambienteIni == 0 ]; then
   return 1
 fi
 
-
+# Preparo el ambiente
 setearVariablesAmbiente
-
-verificarInstalacion
-instCompleta=$?
-if [ $instCompleta == 1 ]; then
-  echo "La instalación no está completa, existen los siguientes archivos faltantes $(printf '%s\n' "${faltantes[@]}")" 
-  echo "Se deberá volver a realizar la instalación"
-  return 1
-fi
 
 # Verifico permisos
 verificarPermisos
 permisos=$?
-if [ $permisos == 1 ]; then
+if [ $permisos == 0 ]; then
   echo "Los permisos estan mal asignados"
   return 1
 fi 
