@@ -69,12 +69,12 @@
 
 	   	$ cd binarios
 
-	8. Inicializar el programa mediante el siguiente comando:
+	8. Inicializar el programa mediante el siguiente <comando>:
 
 		$ . ./PrepararAmbiente.sh
 
 	   En este momento,se puede optar por ejecutar el demonio de recepción de ofertas o no.
-	   Si se decide no ejecutarlo, puede hacerlo manualmente mediante el siguiente comando:
+	   Si se decide no ejecutarlo, puede hacerlo manualmente mediante el siguiente <comando>:
 
 		$ ./LanzarProceso.sh RecibirOfertas
 
@@ -86,7 +86,7 @@
 							Generar consultas e informes	
 ################################################################################################################################################
 
-	Luego de haber procesado los archivos, se pueden generar consultas e informes ejecutando el siguiente comando (siempre
+	Luego de haber procesado los archivos, se pueden generar consultas e informes ejecutando el siguiente <comando> (siempre
 	situado en la carpeta “/binarios/“:
 
 		$ ./determinarGanadores.pl -*modo*
@@ -100,27 +100,27 @@
 							DetenerProceso	
 ################################################################################################################################################
         
-	DetenerProceso sirve para detener un proceso que está corriendo. El funcionamiento es el siguiente: chequea que el comando a detener
+	DetenerProceso sirve para detener un proceso que está corriendo. El funcionamiento es el siguiente: chequea que el <comando> a detener
 	ingresado por el usuario exista en la carpeta binarios, luego verifica que el ambiente este inicializado y finalmente verifica que el
 	programa a detener introducido realmente esté corriendo. Si todas esas hipótesis se verifican se detiene el proceso. Caso contrario
-	el comando sale con un mensaje de error.
+	el <comando> sale con un mensaje de error.
 
 		$ ./DetenerProceso.sh "comando"
 	
-	"comando" representa el comando que se desea detener, sin extensión.
+	"comando" representa el <comando> que se desea detener, sin extensión.
 
 ################################################################################################################################################
 							LanzarProceso	
 ################################################################################################################################################
         
-	LanzarProceso sirve para iniciar un proceso. El funcionamiento es el siguiente: chequea que el comando a iniciar
+	LanzarProceso sirve para iniciar un proceso. El funcionamiento es el siguiente: chequea que el <comando> a iniciar
 	ingresado por el usuario exista en la carpeta binarios, luego verifica que el ambiente este inicializado, graba la información en el log
 	del sistema CIPAL y finalmente verifica que el programa a iniciar introducido no esté corriendo. Si todas esas hipótesis se verifican se
-	detiene el proceso. Caso contrario el comando sale con un mensaje de error.
+	detiene el proceso. Caso contrario el <comando> sale con un mensaje de error.
 
 		$ ./LanzarProceso.sh "comando" ["comandoInvocador"]
 
-	"comando" es el comando que se desea ejecutar, si se especifica solo este parametro, los resultados se muestran por pantalla.
+	"comando" es el <comando> que se desea ejecutar, si se especifica solo este parametro, los resultados se muestran por pantalla.
 	"comandoInvocador" si se especifica la salida la hace en el archivo de log, sin mostrar datos por pantalla. 
 	Ambos comandos se escriben sin extensión.
 
