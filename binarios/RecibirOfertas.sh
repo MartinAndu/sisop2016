@@ -11,11 +11,24 @@ GRABITAC="$BINDIR/GrabarBitacora.sh"
 MOVER="$BINDIR/MoverArchivo.sh"
 MENSAJEERROR=""
 
+ambienteInicializado
+
+
 function msjLog() {
   local MOUT=$1
   local TIPO=$2
   "$GRABITAC" "$0" "$MOUT" "$TIPO" &> /dev/zero
 }
+
+function verificarAmbiente(){
+	ambienteInicializado 
+	if [ $? == 1 ]; then
+		local mensajeError="Ambiente no inicializado"
+		echo "$mensajeError":"ERR"
+		exit 1
+	fi
+}
+
 
 function NovedadesPendientes() {
 	cantidadArchivos=`ls -A $OKDIR | wc -l`

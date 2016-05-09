@@ -1,4 +1,4 @@
-#!/bin/bash
+	#!/bin/bash
 
 GRUPO=~/grupo02
 CONFG="$GRUPO/config/CIPAL.cnf"
@@ -7,7 +7,7 @@ GRABITAC="$GRUPO/binarios/GrabarBitacora.sh"
 
 escribirConfig () {
 	WHEN=`date +%T-%d-%m-%Y`
-	WHO=${USER}
+	WHO=${USER}	
 
 	#GRUPO
 	echo "GRUPO=$GRUPO=$WHO=$WHEN" >> "$CONFG"
@@ -49,6 +49,7 @@ moverArchivos (){
 	for archivoEjecutables in ${totalArchivos[*]}
 	do
 		cp "$(pwd)/binarios/$archivoEjecutables" "$GRUPO/$BINDIR"
+		cp "$(pwd)/binarios/$archivoEjecutables" "$GRUPO/$BIN"
 	done
 
 	echo "Copiando archivos Maestros"
@@ -58,13 +59,15 @@ moverArchivos (){
 	for archivoMaestros in ${totalArchivos[*]}
 	do
 		cp "$(pwd)/maestros/$archivoMaestros" "$GRUPO/$MAEDIR"
+		cp "$(pwd)/maestros/$archivoMaestros" "$GRUPO/$MAE"
+
 	done
 
 }
 
 
 definirDirectorio (){
-	echo "Creando archivos de directorio.."
+	echo "Creando archivos de directorio.."	
 
 	BINDIR="binarios"
 	MAEDIR="maestros"
@@ -75,6 +78,8 @@ definirDirectorio (){
 	LOGDIR="bitacoras"
 	NOKDIR="rechazados"
 	CONFDIR="config"
+	BIN="BIN"
+	MAE="MAE"
 	SLEEPTIME=10
 	LOGSIZE=10
 
@@ -84,10 +89,9 @@ instalacion (){
 	# Define nombre de directorios.
 	definirDirectorio
 
-
-  	echo -e "El sistema sera instalado en: " '\n' "$GRUPO"'\n''\n'
-	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR})
-	echo "Creando Estructuras de directorio.."
+  	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR} ${MAE} ${BIN})
+	echo "Creando Estructuras de directorio.." 
 
 	for index in ${variables[*]}
 	do

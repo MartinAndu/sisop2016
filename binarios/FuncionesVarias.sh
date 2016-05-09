@@ -1,47 +1,22 @@
 #!/bin/bash
 
+
+
 function ambienteInicializado(){
-	if [ "${GRUPO}" == "" ]; then	
-		return 1
+	i=0 
+	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${INFODIR} ${LOGDIR} ${NOKDIR}) 
+	for VAR in "${variables[@]}"
+	do
+		if [[ ! -z "$VAR" ]]; then # si la variable no está vacía es porque fue inicializado
+		  ((i+=1))
+		fi
+	done
+
+	if [ "$i" -gt 0 ]; then # Ambiente ya inicializado
+		return 0
 	fi
 
-	if [ "${CONFDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${BINDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${MAEDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${OKDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${NOKDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${PROCDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${LOGDIR}" == "" ]; then	
-		return 1
-	fi	
-
-	if [ "${ARRIDIR}" == "" ]; then	
-		return 1
-	fi
-
-	if [ "${INFODIR}" == "" ]; then	
-		return 1
-	fi
-
-	return 0
+	return 1
 }
 
 function getPid(){

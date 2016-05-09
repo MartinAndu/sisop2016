@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Funciones varias
+source FuncionesVarias.sh
+
 #Prepara Ambiente
 CONFDIR=~/grupo02/config
 CONFG=$CONFDIR/CIPAL.cnf
@@ -50,18 +53,9 @@ function inicializarAmbiente() {
 # Verifica si el ambiente ya ha sido inicializado
 # Devuelve 1 si ya fue inicializado, 0 sino
 function verificarAmbienteInicializado() {
-  i=0 
-  variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${INFODIR} ${LOGDIR} ${NOKDIR})
-  for VAR in "${variables[@]}"
-  do
-    if [[ ! -z "$VAR" ]]; then # si la variable no está vacía es porque fue inicializado
-      ((i+=1))
-    fi
-  done
-  if [ "$i" -gt 0 ]; then # Ambiente ya inicializado
-    return 1
-  fi
-  return 0
+  # Mando la ruta directamente asi porque ejecutando con . ./PrepararAmbiente.sh, el $0 devuelve
+  # el comando "bash"
+  ambienteInicializado ~/grupo02/PrepararAmbiente.sh
 }
 
 
@@ -176,8 +170,8 @@ function repararInstalacion(){
 function mostrarYGrabar() {
 
 
-  variables=("$BINDIR" "$MAEDIR" "$ARRIDIR" "$OKDIR" "$PROCDIR" "$NOKDIR" "$LOGDIR" "$RECHDIR")
-  mensajes=("Ejecutables" "Maestros y Tablas" "Recepción de archivos de novedades" "Archivos aceptados" "Archivos de ofertas procesadas"  "Archivos de Log" "Archivos de ofertas rechazadas")
+  variables=("$BINDIR" "$MAEDIR" "$ARRIDIR" "$OKDIR" "$PROCDIR" "$NOKDIR" "$LOGDIR")
+  mensajes=("Ejecutables" "Maestros y Tablas" "Recepción de archivos de novedades" "Archivos aceptados" "Archivos de ofertas procesadas" "Archivos de ofertas rechazadas" "Archivos de Log" )
   i=0
   for VAR in "${variables[@]}"
   do
@@ -200,7 +194,7 @@ function deseaLanzar() {
   respuesta=${respuesta,,} # lo paso a lowercase
   case $respuesta in
     "no")
-        echo "Modo de uso de comando ARRANCAR para iniciar RECIBIROFERTAS: LanzarProceso.sh RecibirOfertas" 
+        echo "Modo de uso de comando LANZAR para iniciar RECIBIROFERTAS: LanzarProceso.sh RecibirOfertas" 
       ;;
     "si")
         $LANZAR RecibirOfertas PrepararAmbiente
@@ -212,6 +206,7 @@ function deseaLanzar() {
   esac
 }
 
+
 #Inicio del script
 
 # Seteo todas las variables de ambiente
@@ -220,12 +215,14 @@ function deseaLanzar() {
 
 verificarAmbienteInicializado
 ambienteIni=$?
-if [ $ambienteIni == 1 ]; then
+if [ $ambienteIni == 0 ]; then
   MSJ="Ambiente ya inicializado, para reiniciar termine la sesión e ingrese nuevamente"
   echo $MSJ
   "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
   return 1
 fi
+
+
 setearVariablesAmbiente
 
 verificarInstalacion
