@@ -53,7 +53,21 @@ function inicializarAmbiente() {
 function verificarAmbienteInicializado() {
   # Mando la ruta directamente asi porque ejecutando con . ./PrepararAmbiente.sh, el $0 devuelve
   # el comando "bash"
-  ambienteInicializado ~/grupo02/PrepararAmbiente.sh
+  i=0 
+  variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR} ${INFODIR} ${LOGDIR} ${NOKDIR}) 
+  for VAR in "${variables[@]}"
+  do
+    if [[ ! -z "$VAR" ]]; then # si la variable no está vacía es porque fue inicializado
+      ((i+=1))
+    fi
+  done
+
+  if [ "$i" -gt 0 ]; then # Ambiente ya inicializado
+    return 0
+  fi
+
+  return 1
+
 }
 
 
@@ -240,7 +254,6 @@ function deseaLanzar() {
 # Verifico que ambiente este seteado
 
 # Funciones varias
-source ~/grupo02/binarios/FuncionesVarias.sh
 
 verificarAmbienteInicializado
 ambienteIni=$?
@@ -259,6 +272,7 @@ if [ ! -f $CONFG ]; then
   return 1
 fi
 setearVariablesAmbiente
+
 
 
 # Verifico y reparo instalacion
