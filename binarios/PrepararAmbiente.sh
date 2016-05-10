@@ -93,6 +93,19 @@ function verificarArchivos() {
   rutamaestro=~/grupo02/maestros
   rutabinario=~/grupo02/binarios
 
+
+
+  faltantesCarpetas=("$BINDIR" "$MAEDIR" "$ARRDIR" "$OKDIR" "$PROCDIR" "$PROCDIR/procesadas" "$PROCDIR/rechazadas" "$PROCDIR/sorteos" "$INFODIR" "$NOKDIR" "$CONFDIR" )
+
+  for I in ${faltantesCarpetas[*]}
+  do
+    if [ ! -d "$I" ]; then
+      incompleto=1
+      faltantesCarpetas+=("$I")
+      echo "Falta la carpeta $I"
+    fi
+  done
+
   for ARCH in ${archivos[*]}
   do
     # ¿Existe el archivo?
@@ -146,7 +159,16 @@ function repararInstalacion(){
   # Repara instalacion
 
   directorioRaiz=~/grupo02
-  
+
+  echo "Reparando carpetas.."
+
+  carpetas=("$BINDIR" "$MAEDIR" "$ARRDIR" "$OKDIR" "$PROCDIR" "$PROCDIR/procesadas" "$PROCDIR/rechazadas" "$PROCDIR/sorteos" "$INFODIR" "$NOKDIR" "$CONFDIR")
+
+  for I in ${faltantesCarpetas[*]}
+  do
+      mkdir "$I" &> /dev/null
+  done
+
   echo "Copiando scripts faltantes.."
   for I2 in ${faltantesBIN[*]}
   do
@@ -215,27 +237,10 @@ function deseaLanzar() {
 # Verifico si las variables estan seteadas
 
 
-
-# Verifico y reparo instalacion
-
-verificarInstalacion
-instCompleta=$?
-if [ $instCompleta == 0 ]; then
-
-  repararInstalacion
-  verificarInstalacion
-  verificoReparacion=$?
-  if [ $verificoReparacion == 0 ]; then
-    echo "La instalación no se pudo reparar correctamente, se deberá volver a realizar la instalación"
-    "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
-    return 1
-  fi
-fi
+# Verifico que ambiente este seteado
 
 # Funciones varias
-source FuncionesVarias.sh
-
-# Verifico que ambiente este seteado
+source ~/grupo02/binarios/FuncionesVarias.sh
 
 verificarAmbienteInicializado
 ambienteIni=$?
@@ -254,6 +259,38 @@ if [ ! -f $CONFG ]; then
   return 1
 fi
 setearVariablesAmbiente
+
+
+# Verifico y reparo instalacion
+
+verificarInstalacion
+instCompleta=$?
+if [ $instCompleta == 0 ]; then
+
+  repararInstalacion
+  verificarInstalacion
+  verificoReparacion=$?
+  if [ $verificoReparacion == 0 ]; then
+    unset GRUPO
+    unset ARRIDIR
+    unset BINDIR
+    unset MAEDIR
+    unset CONFDIR
+    unset DATASIZE
+    unset OKDIR
+    unset INFODIR
+    unset PROCDIR
+    unset LOGDIR
+    unset NOKDIR
+    unset LOGSIZE
+    unset LOCKDIR
+    unset SLEEPTIME
+    unset CONFDI
+    echo "La instalación no se pudo reparar correctamente, se deberá volver a realizar la instalación"
+    "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
+    return 1
+  fi
+fi
 
 
 # Verifico permisos
