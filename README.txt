@@ -2,12 +2,12 @@
 	FIUBA - 75.08 - Sistemas Operativos - Primer Cuatrimestre 2016
 	   GRUPO N° 2
 			
-	      	# Alfonso Oderigo, Diego		83969
-	      	# Andújar, Martín			95099
-		# Castro Pippo, Juan Manuel		93760
+	    # Alfonso Oderigo, Diego			83969
+	    # Andújar, Martín					95099
+		# Castro Pippo, Juan Manuel			93760
 		# Moriello, Khalil Alejandro		96525
 		# Savulsky, Sebastián Alejandro		93081
-		# Sueiro, Ignacio Andrés		96817
+		# Sueiro, Ignacio Andrés			96817
 
 ################################################################################################################################################
 									Descripción del Sistema
@@ -96,6 +96,11 @@
 		- *Sin parámetros*: es el modo interactivo. Permite realizar consultas
 		- g: ejecuta el modo interactivo, pero además graba los resultados de las consultas en un archivo
 
+	Al ingresar al sistema, se debe elegir un archivo de sorteo. Por defecto, está seleccionado el archivo con mayor fecha de adjudicación y,
+	de existir varios, se selecciona el que tenga mayor Id de sorteo.
+	Luego se pueden consultar los diversos reportes indicando un grupo, varios (separados por espacio), un rango o todos.
+	Para salir, utilizar la opción X en el menú principal.
+
 ################################################################################################################################################
 							DetenerProceso	
 ################################################################################################################################################
@@ -125,3 +130,17 @@
 	Ambos comandos se escriben sin extensión.
 
 ################################################################################################################################################
+							MostrarBitacora
+################################################################################################################################################
+
+	Este comando muestra el archivo de log generado por alguno de los otros comandos. El primer parametro de MostrarBitacora es el comando
+	que generó el archivo de log. El segundo es una palabra clave a buscar dentro del archivo. Si se indica "-all", se muestra el contenido
+	completo del archivo.
+
+		$ ./MostrarBitacora <comando> <palabra clave | -all>
+
+	E.g.
+
+		$ ./MostrarBitacora RecibirOfertas INFO
+
+	mostrará todas las líneas generadas por RecibirOfertas que contengan la cadena "INFO".
