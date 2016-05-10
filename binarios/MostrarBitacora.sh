@@ -25,6 +25,13 @@ if [ $# -lt 2 ]; then
 	exit 1
 fi
 
+if [ $# -gt 2 ]; then
+	MSJOUT="Ingreso más de dos parámetros"
+	echo $MSJOUT
+	"$GRABITAC" "$0" "${MSJOUT}" "ERR"	
+	exit 1
+fi
+
 if [ ! -f "${FILE}" ]; then
 	MSJOUT="El archivo no existe"
 	echo  $MSJOUT
@@ -33,8 +40,8 @@ if [ ! -f "${FILE}" ]; then
 fi
 
 
-cat -n "$FILE" | grep "$STRING"
-
-
-
-
+if [ $STRING == "-all" ]; then
+	cat -n "$FILE"
+else
+	cat -n "$FILE" | grep "$STRING"
+fi
