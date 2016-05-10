@@ -5,6 +5,9 @@ IFS='
 TRUE=0
 FALSE=1
 
+source FuncionesVarias.sh
+
+
 if [ ! -d "$BINDIR" ]; then
     echo "Variables de ambiente no inicializadas, se procede a salir de la ejecucion"
 exit
@@ -27,7 +30,16 @@ function msjLog() {
   "$GRABITAC" "$0" "${MSJOUT}" "$TIPO"
 }
 
+function verificarAmbiente(){
+    ambienteInicializado "$0"
+    if [ $? == 1 ]; then
+      local mensajeError="Ambiente no inicializado"
+      echo "$mensajeError":"ERR"
+      exit 1
+    fi
+}
 
+verificarAmbiente
 
 fechaUltimoActoAdjudicacion=$(cut "$MAEDIR/FechasAdj.csv" -d';' -f1)
 fechaActual=`date +%Y%m%d`

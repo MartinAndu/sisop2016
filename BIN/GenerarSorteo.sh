@@ -5,28 +5,41 @@ IFS='
 TRUE=0
 FALSE=1
 
-GRABITAC=$(pwd)"/grabarbitacora.sh"
-MOVER=$(pwd)"/mover.sh"
+source FuncionesVarias.sh
 
+
+if [ ! -d "$BINDIR" ]; then
+    echo "Variables de ambiente no inicializadas, se procede a salir de la ejecucion"
+exit
+fi
+
+if [ ! -f "$MAEDIR/FechasAdj.csv" ]; then
+    echo "FechasAdj.csv no encontrado, volver a ejecutar con dicho archivo"
+exit
+fi
+
+if [ ! -d "$PROCDIR/sorteos" ]; then
+    mkdir -p $PROCDIR/sorteos
+fi
+
+GRABITAC="$BINDIR/GrabarBitacora.sh"
 function msjLog() {
-  local MOUT=$1
+  local MSJOUT=$1
   local TIPO=$2
-  echo "${MOUT}"
-  $GRABITAC "$0" "$MOUT" "$TIPO"
+  echo -e "${MSJOUT}"
+  "$GRABITAC" "$0" "${MSJOUT}" "$TIPO"
 }
 
-#Se supone que esto despues no va y se usan las vars de ambiente
-GRUPO="$(dirname "$PWD")" #simula la carpeta raiz
-ARRIDIR=$GRUPO
-MAEDIR=$GRUPO"/maestros"
-PROCDIR=$GRUPO"/procesados"
+function verificarAmbiente(){
+    ambienteInicializado "$0"
+    if [ $? == 1 ]; then
+      local mensajeError="Ambiente no inicializado"
+      echo "$mensajeError":"ERR"
+      exit 1
+    fi
+}
 
-#verifico que haya archivos en MAEDIR
-if [ ! -d $MAEDIR ]; then
-	echo "maestros=$MAEDIR"
-	echo "La carpeta no existe. "
-	exit
-fi
+verificarAmbiente
 
 fechaUltimoActoAdjudicacion=$(cut "$MAEDIR/FechasAdj.csv" -d';' -f1)
 fechaActual=`date +%Y%m%d`
@@ -46,7 +59,7 @@ fechaProxima=0
 
 
 idActual="1"
-
+touch $PROCDIR/sorteos
 for archivo in  `ls -A "$PROCDIR/sorteos"`
 do
     SorteoId=$(echo $archivo | cut -d'_' -f1)
@@ -56,11 +69,13 @@ do
 done
 
 SorteoId=$idActual
-
+msjLog "Inicio de Sorteo" "INFO"
 fechaProxima=$(date -d "$fecha" +%Y%m%d)
-touch $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"
 
+j=1
 for (( i=1;i<=168;i++ )) do 
-echo $RANDOM  $((j++)); 
-done|sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"|head -168
+echo $RANDOM  $((j++))
+done |sort -k1|cut -d" " -f2 | nl -w1 -s\;> $PROCDIR/sorteos/"$SorteoId""_""$fechaProxima"".srt"| head -168;
+msjLog "Fin de Sorteo" "INFO"
+exit
 

@@ -46,6 +46,7 @@ function detener(){
 	verificarComandoInvocado
 	verificarAmbiente
 	verificarProcesoCorriendo
+
 	PID=$(getPid $comando)
 	if [ "$PID" != "" ]; then
 	    #log "INFO" "Deteniendo proceso con pid $PID .."
@@ -77,6 +78,7 @@ if [ $# != 1 ] ;then
 	echo "Modo de detencion \"DetenerProceso.sh RecibirOfertas\""
 	exit 1
 fi
+
 
 detener
 ###########################################################

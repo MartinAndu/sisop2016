@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source FuncionesVarias.sh
+
 IFS='
 '
 TRUE=0
@@ -9,16 +11,28 @@ GRABITAC="$BINDIR/GrabarBitacora.sh"
 MOVER="$BINDIR/MoverArchivo.sh"
 MENSAJEERROR=""
 
+ambienteInicializado
+
+
 function msjLog() {
   local MOUT=$1
   local TIPO=$2
-  echo "${MOUT}"
   "$GRABITAC" "$0" "$MOUT" "$TIPO" &> /dev/zero
 }
 
+function verificarAmbiente(){
+	ambienteInicializado 
+	if [ $? == 1 ]; then
+		local mensajeError="Ambiente no inicializado"
+		echo "$mensajeError":"ERR"
+		exit 1
+	fi
+}
+
+
 function NovedadesPendientes() {
 	cantidadArchivos=`ls -A $OKDIR | wc -l`
-	if [ $cantidadArchivos -ge 0 ] ; then
+	if [ $cantidadArchivos -eq 0 ] ; then
 		return
 	fi
 
@@ -30,9 +44,14 @@ function NovedadesPendientes() {
 		msjLog "$mensaje" "INFO"
 	else
 		#llamo a ProcesarOfertas
-		PID=$(getPid "RecibirOfertas")
-		mensaje="ProcesarOfertas corriendo bajo el no.: $PID"
-		msjLog $mensaje "INFO"
+		"$BINDIR/LanzarProceso.sh" "ProcesarOfertas" "RecibirOfertas"
+		if [ $? -ne 0 ]; then
+			msjLog "La ejecucion de ProcesarOfertas ha fallado" "ERR"
+		else
+			PID=$(getPid "RecibirOfertas")
+			mensaje="ProcesarOfertas corriendo bajo el no.: $PID"
+			msjLog $mensaje "INFO"
+		fi
 	fi
 }
 

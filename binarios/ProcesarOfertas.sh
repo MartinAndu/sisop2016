@@ -1,7 +1,20 @@
 #!/bin/bash
+source FuncionesVarias.sh
 
 GRABITAC="$BINDIR/GrabarBitacora.sh"
 MOVER="$BINDIR/MoverArchivo.sh"
+
+
+
+function verificarAmbiente(){
+    ambienteInicializado 
+    if [ $? == 1 ]; then
+      local mensajeError="Ambiente no inicializado"
+      echo "$mensajeError":"ERR"
+      exit 1
+    fi
+}
+
 
 function msjLog() {
   local MSJOUT=$1
@@ -215,6 +228,8 @@ function FinProceso() {
   msjLog "Fin de ProcesarOfertas" "INFO"
   exit
 }
+
+verificarAmbiente
 
 cantidadArchivosProcesados=0
 cantidadArchivosRechazados=0

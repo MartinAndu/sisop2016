@@ -23,6 +23,11 @@ bytes=1024
 CMDO2=$(echo $CMDO | sed "s|^.*\/\(.*\).sh$|\1|g")
 
 #NOVA {
+
+if [ "$GRUPO" == "" ]; then # Cuando el grupo no esta definido
+	GRUPO=~/grupo02
+fi
+
 LOGDIR="$GRUPO/bitacoras"
 FILE="${LOGDIR}"/"${CMDO2}.log"
 
@@ -32,6 +37,9 @@ WHO=${USER}
 
 # Si el tamanio del archivo de log es mayor que $LOGSIZE, guardo las últimas $TRUNCO líneas
 
+if [ "$LOGSIZE" == "" ]; then # Cuando el logsize no esta definido
+	LOGSIZE=10
+fi
 
 tamaniomaximo=$((${LOGSIZE} * ${bytes}))	# Tamanio máximo en bytes
 if [ -f "$FILE" ];then

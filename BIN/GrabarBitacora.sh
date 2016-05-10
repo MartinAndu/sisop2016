@@ -32,7 +32,6 @@ WHO=${USER}
 
 # Si el tamanio del archivo de log es mayor que $LOGSIZE, guardo las últimas $TRUNCO líneas
 
-LOGSIZE=100
 
 tamaniomaximo=$((${LOGSIZE} * ${bytes}))	# Tamanio máximo en bytes
 if [ -f "$FILE" ];then

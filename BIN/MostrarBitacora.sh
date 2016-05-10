@@ -1,8 +1,22 @@
 #! /bin/bash
 
-FILE="$1".log # Archivo log
+
+source FuncionesVarias.sh
+FILE="$LOGDIR/$1".log # Archivo log
 STRING=$2  # String que se busca
 GRABITAC="$BINDIR/GrabarBitacora.sh"
+
+
+function verificarAmbiente(){
+	ambienteInicializado 
+	if [ $? == 1 ]; then
+		local mensajeError="Ambiente no inicializado"
+		echo "$mensajeError":"ERR"
+		exit 1
+	fi
+}
+
+verificarAmbiente
 
 if [ $# -lt 2 ]; then
 	MSJOUT="Ingreso menos de dos parametros"
