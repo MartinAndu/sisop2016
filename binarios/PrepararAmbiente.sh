@@ -66,12 +66,12 @@ function verificarInstalacion() {
   GRU="Grupos.csv"
   TEMA="temaL_padron.csv"
 
-  MOV="MostrarBitacora.sh"
+  MOST="MostrarBitacora.sh"
   PERL="DeterminarGanadores.pl"
   SORTEO="GenerarSorteo.sh"
   BIT="GrabarBitacora.sh"
   MOV="MoverArchivo.sh"
-  OFERTA="ProcesarOfertas.sh"
+  PROC="ProcesarOfertas.sh"
   ADJ="ProximaFechaAdj.sh"
   OFERTA="RecibirOfertas.sh"
   ULTIMA="UltimaFechaAdj.sh"
@@ -81,7 +81,7 @@ function verificarInstalacion() {
   VARIAS="FuncionesVarias.sh"
 
   archivos=("$CONS" "$FECHADJ" "$GRU" "$TEMA")
-  scripts=("$MOV" "$PERL" "$SORTEO" "$BIT" "$MOV" "$OFERTA" "$ADJ" "$OFERTA" "$ULTIMA" "$LANZ" "$DET" "$PROX" "$VARIAS")
+  scripts=("$MOV" "$PERL" "$SORTEO" "$BIT" "$MOST" "$OFERTA" "$ADJ" "$PROC" "$ULTIMA" "$LANZ" "$DET" "$PROX" "$VARIAS")
   
   verificarArchivos
 }
@@ -118,7 +118,7 @@ function verificarArchivos() {
   if [ $incompleto == 1 ]; then # Si el archivo esta incompleto
     return 0
   fi
-  return 1
+  return 1  
 
 }
 
