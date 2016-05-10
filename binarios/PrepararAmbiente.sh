@@ -4,7 +4,7 @@
 #Prepara Ambiente
 CONFDIR=~/grupo02/config
 CONFG=$CONFDIR/CIPAL.cnf
-GRABITAC="GrabarBitacora.sh"
+GRABITAC=~/grupo02/binarios/GrabarBitacora.sh
 MOVER="MoverArchivo.sh"
 LANZAR="LanzarProceso.sh"
 
@@ -227,6 +227,7 @@ if [ $instCompleta == 0 ]; then
   verificoReparacion=$?
   if [ $verificoReparacion == 0 ]; then
     echo "La instalación no se pudo reparar correctamente, se deberá volver a realizar la instalación"
+    "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
     return 1
   fi
 fi
@@ -246,7 +247,14 @@ if [ $ambienteIni == 0 ]; then
 fi
 
 # Preparo el ambiente
+if [ ! -f $CONFG ]; then
+  MSJ="Archivo de configuracion borrado, se debe realizar la instalacion nuevamente o agregar bien el archivo"
+  echo $MSJ
+  "$GRABITAC" "$BINDIR/PrepararAmbiente.sh" "$MSJ" "ERR"
+  return 1
+fi
 setearVariablesAmbiente
+
 
 # Verifico permisos
 verificarPermisos

@@ -66,7 +66,7 @@ moverArchivos (){
 }
 
 
-definirDirectorio (){
+definirDirectoriosyParametros (){
 	echo "Creando archivos de directorio.."	
 
 	BINDIR="binarios"
@@ -87,7 +87,7 @@ definirDirectorio (){
 
 instalacion (){
 	# Define nombre de directorios.
-	definirDirectorio
+	definirDirectoriosyParametros
 
   	echo -e "El sistema sera instalado en: " '\n' $GRUPO'\n''\n'
 	variables=(${BINDIR} ${MAEDIR} ${ARRIDIR} ${OKDIR} ${PROCDIR}/procesadas ${PROCDIR}/rechazadas ${PROCDIR}/sorteos ${PROCDIR}/validas ${INFODIR} ${LOGDIR} ${NOKDIR} ${CONFDIR} ${CONFDIR} ${MAE} ${BIN})
